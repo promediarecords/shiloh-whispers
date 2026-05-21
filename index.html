@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0D0B07">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Shiloh Whispers">
+<meta name="description" content="Where God Meets You — sacred prayer companion for stillness, reflection, and spiritual growth">
+<title>Shiloh Whispers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --gold:#C9A84C;--gl:#E8C97A;--gd:rgba(201,168,76,0.14);--gf:rgba(201,168,76,0.06);
+  --cream:#FAF7F0;--cm:rgba(250,247,240,0.65);--cf:rgba(250,247,240,0.35);--cv:rgba(250,247,240,0.16);
+  --mid:#0D0B07;--mid2:#131009;--mid3:#1A1510;--mid4:#221C11;
+  --el:#B09A78;--green:#6DBE8A;--gnd:rgba(109,190,138,0.12);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Jost',system-ui,sans-serif;
+  --ease:cubic-bezier(0.4,0,0.2,1);--nav-h:64px;
+}
+html,body{height:100%;background:var(--mid);color:var(--cream);font-family:var(--sans);overflow:hidden;}
+canvas#amb{position:fixed;inset:0;pointer-events:none;z-index:0;}
+
+/* APP SHELL */
+.app{position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;}
+.screens{flex:1;position:relative;overflow:hidden;}
+.screen{position:absolute;inset:0;overflow-y:auto;display:none;flex-direction:column;-webkit-overflow-scrolling:touch;}
+.screen.active{display:flex;}
+.screen::-webkit-scrollbar{display:none;}
+.screen.enter{animation:screenIn 0.32s var(--ease) both;}
+@keyframes screenIn{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:none;}}
+
+/* BOTTOM NAV */
+.bottom-nav{height:var(--nav-h);flex-shrink:0;background:rgba(13,11,7,0.97);border-top:0.5px solid rgba(201,168,76,0.1);display:flex;align-items:stretch;backdrop-filter:blur(20px);position:relative;z-index:50;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;position:relative;}
+.bn-item i{font-size:22px;color:rgba(240,230,204,0.22);transition:color 0.25s;}
+.bn-item span{font-size:9px;letter-spacing:0.5px;color:rgba(240,230,204,0.22);transition:color 0.25s;}
+.bn-item.active i,.bn-item.active span{color:var(--gold);}
+.bn-item.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--gold);border-radius:0 0 2px 2px;}
+.bn-center{flex:1;display:flex;align-items:center;justify-content:center;}
+.bn-pray-btn{width:52px;height:52px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,168,76,0.4);cursor:pointer;transition:all 0.25s;}
+.bn-pray-btn i{font-size:24px;color:var(--mid);}
+.bn-pray-btn:active{transform:scale(0.94);}
+
+/* SHARED */
+.page-header{padding:52px 22px 18px;background:rgba(13,11,7,0.75);backdrop-filter:blur(14px);border-bottom:0.5px solid rgba(201,168,76,0.07);position:sticky;top:0;z-index:20;}
+.ph-eye{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.ph-title{font-family:var(--serif);font-size:25px;font-weight:300;color:var(--cream);}
+.ph-title em{font-style:italic;color:var(--gold);}
+.page-body{padding:18px 22px;display:flex;flex-direction:column;gap:16px;flex:1;}
+.card{background:var(--mid3);border:0.5px solid rgba(201,168,76,0.09);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.card-eye{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+.card-title{font-family:var(--serif);font-size:17px;color:var(--cream);margin-bottom:10px;}
+.card-title em{font-style:italic;color:var(--gold);}
+.btn-gold{width:100%;padding:15px;border-radius:28px;background:var(--gold);color:var(--mid);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.25s;}
+.btn-gold:hover{background:var(--gl);}
+.btn-gold:active{transform:scale(0.98);}
+.btn-gold:disabled{opacity:0.38;cursor:not-allowed;transform:none;}
+.btn-ghost{width:100%;padding:13px;border-radius:28px;background:transparent;color:var(--el);font-size:11px;letter-spacing:1px;text-transform:uppercase;border:0.5px solid rgba(201,168,76,0.18);cursor:pointer;transition:all 0.2s;}
+.btn-ghost:hover{border-color:rgba(201,168,76,0.4);color:var(--gold);}
+.inp{width:100%;padding:14px 16px;background:rgba(255,252,245,0.03);border:0.5px solid rgba(201,168,76,0.13);border-radius:13px;font-family:var(--serif);font-size:16px;color:var(--cream);outline:none;transition:border-color 0.25s;line-height:1.6;}
+.inp::placeholder{color:rgba(240,230,204,0.2);font-style:italic;}
+.inp:focus{border-color:rgba(201,168,76,0.38);box-shadow:0 0 16px rgba(201,168,76,0.06);}
+.tags{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{padding:5px 12px;border-radius:14px;border:0.5px solid rgba(201,168,76,0.12);font-size:10px;color:var(--el);cursor:pointer;transition:all 0.2s;background:transparent;}
+.tag.active{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold);}
+
+/* ── AUTH ── */
+#screen-auth{background:var(--mid);align-items:center;justify-content:center;padding:40px 28px;}
+.auth-wrap{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:26px;}
+.auth-flame{width:68px;height:68px;animation:fp 3s ease-in-out infinite;}
+@keyframes fp{0%,100%{filter:drop-shadow(0 0 8px rgba(201,168,76,0.4));}50%{filter:drop-shadow(0 0 24px rgba(201,168,76,0.75));}}
+.auth-name{font-family:var(--serif);font-size:30px;color:var(--cream);text-align:center;}
+.auth-name span{color:var(--gold);font-style:italic;}
+.auth-tag{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--cf);text-align:center;}
+.auth-toggle{display:flex;width:100%;background:rgba(255,252,245,0.03);border:0.5px solid rgba(201,168,76,0.12);border-radius:12px;overflow:hidden;}
+.auth-tab{flex:1;padding:10px;text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--cf);cursor:pointer;transition:all 0.2s;}
+.auth-tab.active{background:rgba(201,168,76,0.1);color:var(--gold);}
+.auth-form{width:100%;display:flex;flex-direction:column;gap:10px;}
+.auth-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.auth-err{font-size:11px;color:#E07070;text-align:center;min-height:14px;}
+.auth-or{display:flex;align-items:center;gap:10px;width:100%;}
+.auth-or::before,.auth-or::after{content:'';flex:1;height:0.5px;background:rgba(201,168,76,0.1);}
+.auth-or span{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cv);}
+.auth-verse{font-family:var(--serif);font-size:12px;font-style:italic;color:var(--cv);text-align:center;line-height:1.7;max-width:270px;}
+
+/* ── HOME ── */
+.hero-band{padding:52px 22px 20px;position:relative;overflow:hidden;}
+.hero-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 0%,rgba(201,168,76,0.08),transparent 65%);pointer-events:none;animation:breathe 7s ease-in-out infinite;}
+@keyframes breathe{0%,100%{opacity:0.6;}50%{opacity:1;}}
+.home-date{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.home-greeting{font-family:var(--serif);font-size:clamp(22px,6vw,30px);font-weight:300;color:var(--cream);line-height:1.2;margin-bottom:4px;}
+.home-greeting em{font-style:italic;color:var(--gold);}
+.home-sub{font-size:12px;color:var(--cf);line-height:1.65;}
+.xp-row{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.xp-lbl{font-size:9px;letter-spacing:1px;color:var(--el);white-space:nowrap;}
+.xp-track{flex:1;height:3px;background:rgba(255,252,245,0.05);border-radius:2px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gl));border-radius:2px;transition:width 1.2s var(--ease);}
+.xp-pct{font-size:9px;color:var(--gold);}
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.stat-mini{background:var(--mid3);border:0.5px solid rgba(201,168,76,0.08);border-radius:14px;padding:14px;display:flex;align-items:center;gap:10px;}
+.sm-icon{width:32px;height:32px;border-radius:9px;border:0.5px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sm-icon i{font-size:16px;color:var(--gold);}
+.sm-num{font-family:var(--serif);font-size:22px;color:var(--cream);line-height:1;}
+.sm-label{font-size:9px;color:var(--cf);}
+.verse-card{background:var(--mid3);border:0.5px solid rgba(201,168,76,0.1);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.verse-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 100% 0%,rgba(201,168,76,0.07),transparent);pointer-events:none;}
+.vc-lbl{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.vc-text{font-family:var(--serif);font-size:15px;font-style:italic;color:rgba(240,230,204,0.82);line-height:1.85;margin-bottom:8px;}
+.vc-ref{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--el);}
+.qp-card{background:var(--mid3);border:0.5px solid rgba(201,168,76,0.09);border-radius:18px;padding:18px;}
+.qp-lbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.qp-ta{width:100%;height:68px;padding:12px;background:rgba(255,252,245,0.03);border:0.5px solid rgba(201,168,76,0.1);border-radius:11px;font-family:var(--serif);font-size:14px;color:var(--cream);resize:none;outline:none;line-height:1.65;transition:border-color 0.25s;margin-bottom:10px;}
+.qp-ta::placeholder{color:rgba(240,230,204,0.18);font-style:italic;}
+.qp-ta:focus{border-color:rgba(201,168,76,0.32);}
+.qp-tags{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;}
+.qp-tags::-webkit-scrollbar{display:none;}
+.qp-tag{padding:4px 11px;border-radius:10px;border:0.5px solid rgba(201,168,76,0.12);font-size:9px;color:var(--el);cursor:pointer;white-space:nowrap;background:transparent;flex-shrink:0;transition:all 0.2s;}
+.qp-tag.sel{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold);}
+
+/* ── PRAY ── */
+.style-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.style-chip{padding:9px 4px;border-radius:10px;border:0.5px solid rgba(201,168,76,0.1);font-size:9px;color:var(--el);text-align:center;cursor:pointer;transition:all 0.2s;background:transparent;}
+.style-chip i{display:block;font-size:16px;color:var(--gold);margin-bottom:3px;}
+.style-chip.active{border-color:var(--gold);background:rgba(201,168,76,0.08);color:var(--gold);}
+.pray-loading{display:none;flex-direction:column;align-items:center;gap:18px;padding:36px;text-align:center;}
+.pray-loading.visible{display:flex;}
+.pl-orb{width:76px;height:76px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,168,76,0.18),transparent 70%);display:flex;align-items:center;justify-content:center;animation:op 2s ease-in-out infinite;}
+@keyframes op{0%,100%{transform:scale(1);}50%{transform:scale(1.1);box-shadow:0 0 28px rgba(201,168,76,0.15);}}
+.pl-orb i{font-size:28px;color:var(--gold);}
+.pl-wave{display:flex;align-items:center;gap:3px;}
+.wbar{width:3px;border-radius:2px;background:var(--gold);animation:wv 1.1s ease-in-out infinite;}
+.wbar:nth-child(1){height:8px;animation-delay:0s;}.wbar:nth-child(2){height:16px;animation-delay:0.1s;}.wbar:nth-child(3){height:24px;animation-delay:0.2s;}.wbar:nth-child(4){height:16px;animation-delay:0.3s;}.wbar:nth-child(5){height:28px;animation-delay:0.4s;}.wbar:nth-child(6){height:16px;animation-delay:0.5s;}.wbar:nth-child(7){height:10px;animation-delay:0.6s;}
+@keyframes wv{0%,100%{transform:scaleY(0.35);}50%{transform:scaleY(1);}}
+.pl-phrase{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--cf);animation:pf 3s ease-in-out infinite;}
+@keyframes pf{0%,100%{opacity:0.4;}50%{opacity:0.9;}}
+.pray-result{display:none;flex-direction:column;gap:13px;}
+.pray-result.visible{display:flex;}
+.pr-card{background:rgba(201,168,76,0.04);border:0.5px solid rgba(201,168,76,0.18);border-radius:18px;padding:22px;position:relative;overflow:hidden;}
+.pr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);}
+.pr-lbl{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.pr-text{font-family:var(--serif);font-size:16px;font-weight:300;font-style:italic;color:rgba(240,230,204,0.87);line-height:2;white-space:pre-wrap;}
+.pr-text.streaming::after{content:'|';color:var(--gold);animation:blink 0.8s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ── JOURNAL ── */
+.j-stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--mid3);border:0.5px solid rgba(201,168,76,0.08);border-radius:14px;overflow:hidden;}
+.js-item{padding:12px 4px;text-align:center;border-right:0.5px solid rgba(201,168,76,0.07);}
+.js-item:last-child{border-right:none;}
+.js-num{font-family:var(--serif);font-size:19px;line-height:1;}
+.js-lbl{font-size:8px;color:var(--cf);margin-top:2px;}
+.j-filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;}
+.j-filters::-webkit-scrollbar{display:none;}
+.jf{padding:5px 13px;border-radius:12px;border:0.5px solid rgba(201,168,76,0.12);font-size:10px;color:var(--el);cursor:pointer;white-space:nowrap;background:transparent;flex-shrink:0;transition:all 0.2s;}
+.jf.active{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold);}
+.j-list{display:flex;flex-direction:column;gap:8px;}
+.j-item{display:flex;gap:11px;padding:14px;border-radius:14px;border:0.5px solid rgba(201,168,76,0.08);background:rgba(255,252,245,0.02);cursor:pointer;transition:all 0.2s;}
+.j-item:active{background:rgba(201,168,76,0.05);}
+.j-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.j-dot.answered{background:var(--green);box-shadow:0 0 7px rgba(109,190,138,0.4);}
+.j-dot.believing{background:var(--gold);}
+.j-dot.new{background:transparent;border:1.5px solid rgba(201,168,76,0.4);}
+.j-body{flex:1;min-width:0;}
+.j-text{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--cm);line-height:1.55;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:5px;}
+.j-meta{display:flex;align-items:center;gap:6px;}
+.j-cat{font-size:8px;letter-spacing:0.8px;text-transform:uppercase;color:var(--el);background:rgba(201,168,76,0.07);padding:2px 7px;border-radius:6px;}
+.j-date{font-size:8px;color:var(--cv);}
+.j-st{font-size:8px;padding:2px 7px;border-radius:6px;margin-left:auto;}
+.j-st.answered{background:var(--gnd);color:var(--green);}
+.j-st.believing{background:rgba(201,168,76,0.1);color:var(--gold);}
+.j-st.new{background:rgba(255,252,245,0.04);color:var(--cf);}
+.j-add{position:fixed;bottom:calc(var(--nav-h)+14px);right:18px;width:48px;height:48px;border-radius:50%;background:var(--gold);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(201,168,76,0.35);z-index:30;}
+.j-add i{font-size:22px;color:var(--mid);}
+.j-add:active{transform:scale(0.94);}
+
+/* JOURNAL DETAIL OVERLAY */
+.j-detail{position:fixed;inset:0;background:var(--mid);z-index:200;display:none;flex-direction:column;animation:slideUp 0.35s var(--ease) both;}
+.j-detail.open{display:flex;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:none;}}
+.jd-top{padding:50px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid rgba(201,168,76,0.08);background:rgba(13,11,7,0.8);backdrop-filter:blur(12px);}
+.jd-back{display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--el);font-size:13px;}
+.jd-back i{font-size:18px;}
+.jd-badge{font-size:10px;padding:5px 12px;border-radius:12px;}
+.jd-badge.answered{background:var(--gnd);color:var(--green);border:0.5px solid rgba(109,190,138,0.2);}
+.jd-badge.believing{background:rgba(201,168,76,0.1);color:var(--gold);border:0.5px solid rgba(201,168,76,0.2);}
+.jd-scroll{flex:1;overflow-y:auto;padding:22px 20px 40px;}
+.jd-scroll::-webkit-scrollbar{display:none;}
+.jd-prayer{background:rgba(201,168,76,0.04);border:0.5px solid rgba(201,168,76,0.16);border-radius:18px;padding:22px;margin-bottom:16px;position:relative;overflow:hidden;}
+.jd-prayer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,0.35),transparent);}
+.jd-plbl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.jd-ptext{font-family:var(--serif);font-size:16px;font-style:italic;color:rgba(240,230,204,0.85);line-height:1.95;}
+.jd-answered{background:rgba(109,190,138,0.06);border:0.5px solid rgba(109,190,138,0.2);border-radius:14px;padding:16px;margin-bottom:14px;display:none;}
+.jd-answered.vis{display:block;}
+.jd-albl{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:6px;}
+.jd-atext{font-family:var(--serif);font-size:13px;font-style:italic;color:rgba(240,230,204,0.75);line-height:1.7;}
+.jd-notes{width:100%;min-height:76px;padding:13px;background:rgba(255,252,245,0.03);border:0.5px solid rgba(201,168,76,0.1);border-radius:13px;font-family:var(--serif);font-size:14px;color:var(--cream);resize:none;outline:none;line-height:1.75;margin-bottom:14px;}
+.jd-notes::placeholder{color:rgba(240,230,204,0.18);font-style:italic;}
+.jd-notes:focus{border-color:rgba(201,168,76,0.3);}
+.jd-mark{width:100%;padding:13px;border-radius:22px;background:transparent;border:0.5px solid rgba(109,190,138,0.25);color:var(--green);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.jd-mark:active{background:var(--gnd);}
+.jd-mark.done{background:var(--gnd);border-color:var(--green);pointer-events:none;}
+
+/* CIRCLES */
+.circles-list{display:flex;flex-direction:column;gap:10px;}
+.cc{display:flex;align-items:center;gap:13px;padding:16px;border-radius:16px;border:0.5px solid rgba(201,168,76,0.09);background:var(--mid3);cursor:pointer;transition:all 0.2s;}
+.cc:active{background:rgba(201,168,76,0.05);}
+.cc-icon{width:42px;height:42px;border-radius:11px;background:rgba(201,168,76,0.08);border:0.5px solid rgba(201,168,76,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cc-icon i{font-size:19px;color:var(--gold);}
+.cc-body{flex:1;min-width:0;}
+.cc-name{font-size:14px;color:var(--cream);font-weight:500;margin-bottom:2px;}
+.cc-count{font-size:10px;color:var(--cf);}
+.cc-live{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--green);margin-top:2px;}
+.cc-live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:lp 1.5s ease-in-out infinite;}
+@keyframes lp{0%,100%{opacity:0.5;}50%{opacity:1;}}
+.cc-join{padding:7px 14px;border-radius:13px;background:rgba(201,168,76,0.1);border:0.5px solid rgba(201,168,76,0.2);font-size:10px;color:var(--gold);cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
+.cc-join.joined{background:var(--gnd);border-color:rgba(109,190,138,0.2);color:var(--green);}
+
+/* PROFILE */
+.profile-hero{padding:52px 22px 22px;text-align:center;background:var(--mid2);border-bottom:0.5px solid rgba(201,168,76,0.07);position:relative;overflow:hidden;}
+.profile-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 0%,rgba(201,168,76,0.07),transparent);pointer-events:none;}
+.ph-av{width:70px;height:70px;border-radius:50%;background:var(--gd);border:1.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:26px;color:var(--gold);margin:0 auto 10px;}
+.ph-nm{font-family:var(--serif);font-size:24px;color:var(--cream);margin-bottom:2px;}
+.ph-plan{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.ph-badges{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.ph-badge{padding:5px 13px;border-radius:16px;border:0.5px solid rgba(201,168,76,0.17);font-size:10px;color:var(--el);background:rgba(201,168,76,0.04);}
+.ps{padding:18px 22px;}
+.ps-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.ps-item{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:0.5px solid rgba(201,168,76,0.06);cursor:pointer;}
+.ps-item:last-child{border-bottom:none;}
+.ps-item i{font-size:17px;color:var(--el);width:22px;flex-shrink:0;}
+.ps-lbl{font-size:13px;color:var(--cream);flex:1;}
+.ps-val{font-size:11px;color:var(--cf);}
+.logout{width:100%;padding:13px;border-radius:22px;background:transparent;border:0.5px solid rgba(220,80,80,0.2);color:rgba(220,80,80,0.55);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:6px;}
+.logout:hover{background:rgba(220,80,80,0.06);color:rgba(220,80,80,0.85);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(13,11,7,0.92);z-index:300;display:none;align-items:flex-end;backdrop-filter:blur(14px);}
+.modal-ov.open{display:flex;}
+.modal-sheet{width:100%;background:var(--mid3);border-radius:22px 22px 0 0;border-top:0.5px solid rgba(201,168,76,0.16);padding:26px 22px 38px;animation:shUp 0.36s var(--ease) both;}
+@keyframes shUp{from{transform:translateY(100%);}to{transform:none;}}
+.ms-handle{width:34px;height:3px;background:rgba(201,168,76,0.2);border-radius:2px;margin:0 auto 18px;}
+.ms-title{font-family:var(--serif);font-size:21px;color:var(--cream);margin-bottom:14px;}
+.ms-title em{font-style:italic;color:var(--gold);}
+.ms-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.ms-cat{padding:5px 12px;border-radius:10px;border:0.5px solid rgba(201,168,76,0.12);font-size:10px;color:var(--el);cursor:pointer;transition:all 0.2s;background:transparent;}
+.ms-cat.sel{border-color:var(--gold);background:rgba(201,168,76,0.09);color:var(--gold);}
+
+
+
+/* ── DAILY RHYTHMS / TODAY'S WHISPER ── */
+.whisper-card{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.025));border:0.5px solid rgba(201,168,76,0.14);border-radius:18px;padding:18px;position:relative;overflow:hidden;}
+.whisper-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 85% 0%,rgba(201,168,76,0.10),transparent 70%);pointer-events:none;animation:breathe 7s ease-in-out infinite;}
+.tw-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:1;}
+.tw-label{font-size:8px;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);}
+.tw-pill{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--el);border:0.5px solid rgba(201,168,76,0.16);border-radius:10px;padding:3px 8px;background:rgba(255,252,245,0.025);}
+.tw-text{font-family:var(--serif);font-size:16px;font-style:italic;font-weight:300;color:rgba(250,247,240,0.86);line-height:1.85;position:relative;z-index:1;margin-bottom:8px;}
+.tw-ref{font-size:9px;letter-spacing:1.3px;text-transform:uppercase;color:var(--gold);position:relative;z-index:1;}
+.rhythm-card{background:var(--mid3);border:0.5px solid rgba(201,168,76,0.09);border-radius:18px;padding:18px;}
+.rhythm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.rhythm-title{font-family:var(--serif);font-size:17px;color:var(--cream);}
+.rhythm-title em{font-style:italic;color:var(--gold);}
+.rhythm-note{font-size:9px;color:var(--cf);letter-spacing:1px;text-transform:uppercase;}
+.rhythm-list{display:flex;flex-direction:column;gap:8px;}
+.rhythm-item{display:flex;align-items:center;gap:10px;padding:11px;border-radius:13px;border:0.5px solid rgba(201,168,76,0.08);background:rgba(255,252,245,0.018);transition:all 0.2s;}
+.rhythm-item.done{background:rgba(109,190,138,0.055);border-color:rgba(109,190,138,0.16);}
+.ri-icon{width:30px;height:30px;border-radius:9px;background:rgba(201,168,76,0.08);border:0.5px solid rgba(201,168,76,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ri-icon i{font-size:15px;color:var(--gold);}
+.ri-body{flex:1;min-width:0;}
+.ri-name{font-size:12px;color:var(--cream);line-height:1.2;}
+.ri-time{font-size:9px;color:var(--cf);margin-top:2px;}
+.ri-check{width:22px;height:22px;border-radius:50%;border:0.5px solid rgba(201,168,76,0.18);display:flex;align-items:center;justify-content:center;color:transparent;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.rhythm-item.done .ri-check{background:var(--green);border-color:var(--green);color:var(--mid);}
+.ri-check i{font-size:14px;}
+.rhythm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.rhythm-mini{padding:9px;border-radius:16px;background:transparent;border:0.5px solid rgba(201,168,76,0.16);font-size:10px;color:var(--el);letter-spacing:0.8px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.rhythm-mini:active,.rhythm-mini:hover{border-color:rgba(201,168,76,0.35);color:var(--gold);background:rgba(201,168,76,0.05);}
+
+/* INSTALL BANNER */
+.ib{display:none;background:rgba(201,168,76,0.08);border-top:0.5px solid rgba(201,168,76,0.2);padding:11px 18px;align-items:center;gap:10px;position:fixed;bottom:var(--nav-h);left:0;right:0;z-index:40;}
+.ib.vis{display:flex;}
+.ib-txt{flex:1;font-size:11px;color:var(--cm);line-height:1.4;}
+.ib-txt strong{color:var(--gold);display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.ib-btn{padding:8px 14px;border-radius:14px;background:var(--gold);color:var(--mid);font-size:10px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;white-space:nowrap;}
+.ib-x{font-size:17px;color:var(--cv);cursor:pointer;padding:4px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nav-h)+14px);left:50%;transform:translateX(-50%) translateY(80px);background:var(--mid4);border:0.5px solid rgba(201,168,76,0.28);border-radius:22px;padding:11px 20px;font-size:12px;color:var(--cm);transition:transform 0.4s var(--ease);z-index:500;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast i{color:var(--gold);font-size:13px;}
+
+/* ─────────────────────────────────────────────
+   PREMIUM POLISH PATCH — mobile-first sanctuary
+   Fixes stretched desktop layout and upgrades visual rhythm
+   ───────────────────────────────────────────── */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(ellipse 900px 520px at 50% 0%, rgba(201,168,76,0.08), transparent 65%),
+    radial-gradient(ellipse 500px 420px at 15% 85%, rgba(201,168,76,0.035), transparent 70%),
+    linear-gradient(180deg,#0B0906 0%,#0D0B07 48%,#090806 100%);
+}
+.screen{background:transparent;}
+.hero-band,.page-header,.profile-hero{
+  max-width:480px;
+  width:100%;
+  margin:0 auto;
+}
+#screen-home > div[style*="padding:16px 22px"],
+#screen-pray > div[style*="padding:18px 22px"],
+#screen-journal > div[style*="padding:16px 22px"],
+.page-body,
+.ps,
+#screen-profile > div[style*="padding:0 22px 40px"]{
+  max-width:480px;
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+}
+.hero-band{
+  padding-top:46px;
+  border-bottom:0.5px solid rgba(201,168,76,0.06);
+}
+.home-greeting{
+  font-size:clamp(30px,8vw,40px);
+  letter-spacing:-0.35px;
+}
+.home-sub{
+  max-width:330px;
+}
+.stats-row{
+  gap:12px;
+}
+.stat-mini,.verse-card,.whisper-card,.rhythm-card,.qp-card,.card,.j-stats,.j-item,.cc{
+  background:
+    linear-gradient(180deg,rgba(255,252,245,0.038),rgba(255,252,245,0.012)),
+    rgba(26,21,16,0.92);
+  border-color:rgba(201,168,76,0.135);
+  box-shadow:
+    0 14px 40px rgba(0,0,0,0.32),
+    inset 0 1px 0 rgba(250,247,240,0.035);
+}
+.stat-mini{
+  min-height:78px;
+  border-radius:18px;
+}
+.sm-icon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:rgba(201,168,76,0.075);
+}
+.sm-num{
+  font-size:28px;
+}
+.sm-label{
+  font-size:10px;
+  letter-spacing:.25px;
+}
+.verse-card,.whisper-card{
+  padding:22px;
+  border-radius:22px;
+}
+.vc-lbl,.tw-label,.qp-lbl{
+  letter-spacing:2.8px;
+}
+.vc-text,.tw-text{
+  font-size:18px;
+  line-height:1.9;
+}
+.rhythm-card{
+  padding:20px;
+  border-radius:22px;
+}
+.rhythm-title{
+  font-size:22px;
+}
+.rhythm-item{
+  padding:13px;
+  border-radius:16px;
+}
+.ri-name{
+  font-size:14px;
+}
+.ri-time{
+  font-size:10px;
+}
+.qp-card{
+  padding:20px;
+  border-radius:22px;
+}
+.qp-ta{
+  min-height:86px;
+  border-radius:16px;
+}
+.bottom-nav{
+  width:100%;
+  max-width:480px;
+  margin:0 auto;
+  left:0;
+  right:0;
+  background:linear-gradient(180deg,rgba(20,16,9,0.78),rgba(8,7,5,0.98));
+  border:0.5px solid rgba(201,168,76,0.12);
+  border-left:none;
+  border-right:none;
+  box-shadow:0 -18px 60px rgba(0,0,0,0.55);
+}
+.bn-pray-btn{
+  width:58px;
+  height:58px;
+  margin-top:-20px;
+  box-shadow:0 0 0 8px rgba(201,168,76,0.04),0 12px 40px rgba(201,168,76,0.42);
+}
+.toast{
+  max-width:calc(100vw - 28px);
+}
+@media (min-width: 760px){
+  html,body{
+    overflow:hidden;
+  }
+  body{
+    background:#060504;
+  }
+  .app{
+    position:fixed;
+    width:430px;
+    height:min(920px, calc(100vh - 32px));
+    left:50%;
+    top:16px;
+    right:auto;
+    bottom:auto;
+    transform:translateX(-50%);
+    border:1px solid rgba(201,168,76,0.18);
+    border-radius:34px;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 320px 220px at 50% 0%, rgba(201,168,76,0.08), transparent 70%),
+      var(--mid);
+    box-shadow:
+      0 40px 120px rgba(0,0,0,0.82),
+      0 0 0 1px rgba(250,247,240,0.025),
+      inset 0 1px 0 rgba(250,247,240,0.04);
+  }
+  .app::before{
+    content:'';
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:94px;
+    height:6px;
+    border-radius:6px;
+    background:rgba(250,247,240,0.065);
+    z-index:80;
+  }
+  .screen{
+    border-radius:34px 34px 0 0;
+  }
+  .bottom-nav{
+    max-width:none;
+    border-radius:0 0 34px 34px;
+    border-left:none;
+    border-right:none;
+    border-bottom:none;
+  }
+  .j-add{
+    left:calc(50% + 155px);
+    right:auto;
+  }
+  .ib{
+    width:430px;
+    left:50%;
+    transform:translateX(-50%);
+    border-left:1px solid rgba(201,168,76,0.12);
+    border-right:1px solid rgba(201,168,76,0.12);
+  }
+  .toast{
+    bottom:88px;
+  }
+  .modal-ov{
+    align-items:center;
+    justify-content:center;
+  }
+  .modal-sheet{
+    width:390px;
+    border-radius:26px;
+    padding-bottom:28px;
+    border:0.5px solid rgba(201,168,76,0.16);
+  }
+  .j-detail{
+    width:430px;
+    height:min(920px, calc(100vh - 32px));
+    left:50%;
+    top:16px;
+    transform:translateX(-50%);
+    border-radius:34px;
+    border:1px solid rgba(201,168,76,0.14);
+    overflow:hidden;
+  }
+}
+@media (max-width: 390px){
+  .home-greeting{font-size:28px;}
+  .vc-text,.tw-text{font-size:16px;}
+  .stats-row{gap:9px;}
+  .stat-mini{padding:12px;}
+}
+
+
+
+/* ─────────────────────────────────────────────
+   SHILOH WHISPERS V2 — premium sanctuary upgrade
+   Adds magic moment, empty states, readability, and motion polish
+   ───────────────────────────────────────────── */
+:root{--halo:rgba(232,201,122,.22);--softGold:rgba(201,168,76,.095)}
+.screen{scroll-behavior:smooth;}
+.hero-band{position:relative; padding-bottom:18px;}
+.hero-band::after{content:'';position:absolute;left:50%;top:18px;width:220px;height:220px;transform:translateX(-50%);background:radial-gradient(circle,rgba(201,168,76,.13),transparent 68%);filter:blur(4px);opacity:.65;animation:sanctuaryPulse 8s ease-in-out infinite;pointer-events:none;}
+@keyframes sanctuaryPulse{0%,100%{opacity:.38;transform:translateX(-50%) scale(.96)}50%{opacity:.82;transform:translateX(-50%) scale(1.06)}}
+.stat-mini,.verse-card,.whisper-card,.rhythm-card,.qp-card,.j-stats,.cc,.ps-item{transition:transform .25s var(--ease),border-color .25s var(--ease),box-shadow .25s var(--ease),background .25s var(--ease)}
+.stat-mini:hover,.verse-card:hover,.whisper-card:hover,.rhythm-card:hover,.qp-card:hover,.cc:hover{transform:translateY(-2px);border-color:rgba(201,168,76,.26);box-shadow:0 18px 56px rgba(0,0,0,.45),0 0 34px rgba(201,168,76,.055),inset 0 1px 0 rgba(250,247,240,.045)}
+.verse-card{background:linear-gradient(145deg,rgba(255,252,245,.06),rgba(201,168,76,.045) 45%,rgba(13,11,7,.38)),rgba(26,21,16,.96)!important;}
+.verse-card::after,.whisper-card::after{content:'';position:absolute;left:-40%;top:0;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(232,201,122,.08),transparent);transform:skewX(-18deg);animation:holySweep 7s ease-in-out infinite;pointer-events:none;}
+@keyframes holySweep{0%,58%{left:-50%;opacity:0}70%{opacity:1}100%{left:120%;opacity:0}}
+.vc-text,.tw-text{font-size:19px!important;line-height:2.02!important;color:rgba(250,247,240,.88)!important;}
+.vc-ref,.tw-ref{font-size:10px!important;color:rgba(232,201,122,.9)!important;}
+.home-date,.ph-eye,.vc-lbl,.tw-label,.qp-lbl,.ps-title{font-weight:600;}
+.rhythm-item{position:relative;overflow:hidden;}
+.rhythm-item::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120px 60px at 10% 0%,rgba(201,168,76,.07),transparent 70%);opacity:.55;pointer-events:none;}
+.bn-item{transition:transform .22s var(--ease),opacity .22s var(--ease)}
+.bn-item:active{transform:translateY(1px) scale(.96)}
+.bn-pray-btn{animation:prayGlow 3.8s ease-in-out infinite;}
+@keyframes prayGlow{0%,100%{box-shadow:0 0 0 8px rgba(201,168,76,.04),0 12px 40px rgba(201,168,76,.38)}50%{box-shadow:0 0 0 13px rgba(201,168,76,.07),0 18px 56px rgba(201,168,76,.55)}}
+.pr-card{box-shadow:0 20px 70px rgba(0,0,0,.46),0 0 40px rgba(201,168,76,.07)}
+.pr-text{font-size:18px!important;line-height:2.08!important;}
+.empty-sanctuary{padding:34px 18px;text-align:center;border:0.5px solid rgba(201,168,76,.12);border-radius:22px;background:linear-gradient(180deg,rgba(255,252,245,.035),rgba(201,168,76,.018));box-shadow:inset 0 1px 0 rgba(250,247,240,.035)}
+.empty-icon{width:58px;height:58px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);box-shadow:0 0 32px rgba(201,168,76,.12)}
+.empty-icon i{font-size:25px;color:var(--gold)}
+.empty-title{font-family:var(--serif);font-size:22px;color:var(--cream);margin-bottom:6px;}
+.empty-title em{color:var(--gold);font-style:italic;}
+.empty-copy{font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.75;color:var(--cf);max-width:280px;margin:0 auto 16px;}
+.empty-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 17px;border-radius:22px;border:0.5px solid rgba(201,168,76,.24);background:rgba(201,168,76,.08);color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;cursor:pointer;}
+.profile-hero{min-height:170px;display:flex;flex-direction:column;justify-content:center;}
+.ph-av{box-shadow:0 0 0 8px rgba(201,168,76,.04),0 0 34px rgba(201,168,76,.18);}
+.ps-item{border-radius:16px;padding:14px 12px;border-bottom:none;margin-bottom:6px;background:rgba(255,252,245,.012);}
+.ps-item:hover{background:rgba(201,168,76,.045);}
+/* Magic sanctuary overlay */
+.magic-ov{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 36%,rgba(201,168,76,.18),rgba(13,11,7,.96) 58%,rgba(3,3,2,.985));backdrop-filter:blur(16px);}
+.magic-ov.open{display:flex;animation:fadeIn .3s var(--ease) both;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.magic-card{width:min(360px,calc(100vw - 40px));text-align:center;border:1px solid rgba(201,168,76,.18);border-radius:32px;padding:32px 24px;background:linear-gradient(180deg,rgba(255,252,245,.055),rgba(201,168,76,.025));box-shadow:0 30px 120px rgba(0,0,0,.62),inset 0 1px 0 rgba(250,247,240,.05);position:relative;overflow:hidden;}
+.magic-card::before{content:'';position:absolute;inset:-40%;background:conic-gradient(from 180deg,transparent,rgba(201,168,76,.12),transparent 38%);animation:slowSpin 12s linear infinite;opacity:.5;}
+@keyframes slowSpin{to{transform:rotate(360deg)}}
+.magic-inner{position:relative;z-index:1;}
+.magic-orb{width:92px;height:92px;border-radius:50%;margin:0 auto 22px;background:radial-gradient(circle,rgba(232,201,122,.95),rgba(201,168,76,.35) 38%,rgba(201,168,76,.08) 70%,transparent 72%);display:flex;align-items:center;justify-content:center;animation:orbBreathe 3.4s ease-in-out infinite;box-shadow:0 0 60px rgba(201,168,76,.28)}
+@keyframes orbBreathe{0%,100%{transform:scale(.94)}50%{transform:scale(1.04)}}
+.magic-orb i{font-size:34px;color:#0D0B07;}
+.magic-kicker{font-size:9px;letter-spacing:2.8px;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+.magic-title{font-family:var(--serif);font-size:32px;font-weight:300;line-height:1.1;margin-bottom:10px;}
+.magic-title em{color:var(--gold);font-style:italic;}
+.magic-copy{font-family:var(--serif);font-size:17px;font-style:italic;line-height:1.7;color:var(--cm);margin-bottom:22px;}
+.breath-ring{width:150px;height:150px;border-radius:50%;border:1px solid rgba(201,168,76,.22);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;animation:breathRing 6s ease-in-out infinite;background:radial-gradient(circle,rgba(201,168,76,.08),transparent 68%)}
+@keyframes breathRing{0%,100%{transform:scale(.82);opacity:.45}50%{transform:scale(1);opacity:1}}
+.breath-ring span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.magic-actions{display:grid;gap:9px;}
+@media(max-width:390px){.magic-title{font-size:28px}.vc-text,.tw-text,.pr-text{font-size:16.5px!important}}
+
+
+
+/* ─────────────────────────────────────────────
+   DESKTOP SCROLL FIX — visible PC side slider
+   ───────────────────────────────────────────── */
+.screen{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201,168,76,0.55) rgba(255,252,245,0.04);
+  padding-bottom: calc(var(--nav-h) + 24px);
+}
+.screen::-webkit-scrollbar{
+  display:block !important;
+  width:7px;
+}
+.screen::-webkit-scrollbar-track{
+  background:rgba(255,252,245,0.035);
+  border-radius:10px;
+}
+.screen::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg, rgba(232,201,122,0.72), rgba(201,168,76,0.38));
+  border-radius:10px;
+}
+.screen::-webkit-scrollbar-thumb:hover{
+  background:rgba(232,201,122,0.85);
+}
+@media (max-width:759px){
+  .screen::-webkit-scrollbar{display:none !important;}
+  .screen{scrollbar-width:none;}
+}
+@media (min-width:760px){
+  .screens{overflow:hidden;}
+  .screen{
+    overflow-y:auto !important;
+    padding-bottom:calc(var(--nav-h) + 38px) !important;
+  }
+  #screen-home > div[style*="padding:16px 22px"],
+  #screen-pray > div[style*="padding:18px 22px"],
+  #screen-journal > div[style*="padding:16px 22px"],
+  .page-body{
+    padding-bottom:96px !important;
+  }
+}
+
+</style>
+</head>
+<body>
+<canvas id="amb"></canvas>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-check"></i><span id="tmsg"></span></div>
+
+<!-- INSTALL BANNER -->
+<div class="ib" id="ib">
+  <div class="ib-txt"><strong>Install Shiloh Whispers</strong>Add to home screen for the full experience</div>
+  <button class="ib-btn" id="ib-btn">Install</button>
+  <span class="ib-x" onclick="document.getElementById('ib').classList.remove('vis')">✕</span>
+</div>
+
+<!-- JOURNAL DETAIL -->
+<div class="j-detail" id="j-detail">
+  <div class="jd-top">
+    <div class="jd-back" onclick="closeDetail()"><i class="ti ti-arrow-left"></i> Journal</div>
+    <div class="jd-badge believing" id="jd-badge">Believing</div>
+  </div>
+  <div class="jd-scroll" id="jd-scroll"></div>
+</div>
+
+<!-- NEW ENTRY MODAL -->
+<div class="modal-ov" id="new-modal">
+  <div class="modal-sheet">
+    <div class="ms-handle"></div>
+    <div class="ms-title">Share your <em>heart</em></div>
+    <div class="ms-cats" id="ms-cats">
+      <div class="ms-cat sel" onclick="selCat(this)">Anxiety</div>
+      <div class="ms-cat" onclick="selCat(this)">Healing</div>
+      <div class="ms-cat" onclick="selCat(this)">Finances</div>
+      <div class="ms-cat" onclick="selCat(this)">Family</div>
+      <div class="ms-cat" onclick="selCat(this)">Purpose</div>
+      <div class="ms-cat" onclick="selCat(this)">Gratitude</div>
+      <div class="ms-cat" onclick="selCat(this)">Intercession</div>
+    </div>
+    <textarea class="inp" id="modal-ta" style="height:110px;margin-bottom:13px;" placeholder="Father, I come to You today about..."></textarea>
+    <button class="btn-gold" onclick="saveEntry()">✦ Save to Journal</button>
+    <button class="btn-ghost" style="margin-top:8px;" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+
+
+<!-- MAGIC SANCTUARY OVERLAY -->
+<div class="magic-ov" id="magic-ov">
+  <div class="magic-card">
+    <div class="magic-inner">
+      <div class="magic-orb"><i class="ti ti-sparkles"></i></div>
+      <div class="magic-kicker">✦ A quiet moment</div>
+      <div class="magic-title">Let the noise <em>settle</em></div>
+      <div class="magic-copy">Breathe slowly. Bring one thing to God. Let Shiloh Whispers help you turn it into prayer.</div>
+      <div class="breath-ring"><span>Breathe</span></div>
+      <div class="magic-actions">
+        <button class="btn-gold" onclick="closeSanctuary();go('pray')">Begin Prayer</button>
+        <button class="btn-ghost" onclick="closeSanctuary()">Return</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+  <div class="screens" id="screens">
+
+    <!-- AUTH -->
+    <div class="screen active" id="screen-auth">
+      <div class="auth-wrap">
+        <svg class="auth-flame" viewBox="0 0 68 68" fill="none">
+          <circle cx="34" cy="34" r="32" fill="#1A1410" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <path d="M34 57C22 57 18 45 21 35C23 28 26 23 31 17C31 24 33 26 34 29C35.5 23 36 18 39 14C43 21 48 29 48 38C48 49 42 57 34 57Z" fill="url(#afl)"/>
+          <path d="M29 38C27 37 26 34.5 27.5 32C29 29.5 31 30 32 32L34 34.5L36 32C37 29.5 39.5 30 40 32.5C40.5 35 38.5 37.5 36 38.5L34 38Z" fill="rgba(250,247,240,0.88)"/>
+          <defs><linearGradient id="afl" x1="34" y1="14" x2="34" y2="57" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#F0D070"/><stop offset="65%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#7A4E10"/></linearGradient></defs>
+        </svg>
+        <div class="auth-name">Shiloh <span>Whispers</span></div>
+        <div class="auth-tag">Where God Meets You</div>
+        <div class="auth-toggle">
+          <div class="auth-tab active" id="tab-in" onclick="switchTab('in')">Sign In</div>
+          <div class="auth-tab" id="tab-up" onclick="switchTab('up')">Create Account</div>
+        </div>
+        <div class="auth-form">
+          <div id="name-field" style="display:none;">
+            <div class="auth-lbl" style="margin-bottom:5px;">Your Name</div>
+            <input class="inp" id="auth-name-in" type="text" placeholder="What should Shiloh call you?" style="margin-bottom:10px;">
+          </div>
+          <div class="auth-lbl" style="margin-bottom:5px;">Email</div>
+          <input class="inp" id="auth-email" type="email" placeholder="your@email.com" style="margin-bottom:10px;" autocomplete="email">
+          <div class="auth-lbl" style="margin-bottom:5px;">Password</div>
+          <input class="inp" id="auth-pw" type="password" placeholder="••••••••" style="margin-bottom:6px;" autocomplete="current-password">
+          <div class="auth-err" id="auth-err"></div>
+          <button class="btn-gold" id="auth-btn" onclick="doAuth()">✦ Sign In</button>
+          <div class="auth-or"><span>or</span></div>
+          <button class="btn-ghost" onclick="doGoogle()"><i class="ti ti-brand-google" style="margin-right:7px;"></i>Continue with Google</button>
+        </div>
+        <div class="auth-verse">"Come to me, all who are weary and burdened,<br>and I will give you rest." — Matthew 11:28</div>
+      </div>
+    </div>
+
+    <!-- HOME -->
+    <div class="screen" id="screen-home">
+      <div class="hero-band">
+        <div class="home-date" id="home-date"></div>
+        <div class="home-greeting">Good morning, <em id="home-name">Beloved</em> ✦</div>
+        <div class="home-sub">Walk in peace today. Shiloh Whispers is with you.</div>
+        <div class="xp-row">
+          <div class="xp-lbl">Spirit XP · Level <span id="home-level">1</span></div>
+          <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+          <div class="xp-pct" id="xp-pct">0%</div>
+        </div>
+      </div>
+      <div style="padding:16px 22px;display:flex;flex-direction:column;gap:14px;flex:1;padding-bottom:30px;">
+        <div class="stats-row">
+          <div class="stat-mini"><div class="sm-icon"><i class="ti ti-flame"></i></div><div><div class="sm-num" id="s-streak">0</div><div class="sm-label">Day Streak</div></div></div>
+          <div class="stat-mini"><div class="sm-icon"><i class="ti ti-sparkles"></i></div><div><div class="sm-num" id="s-prayers">0</div><div class="sm-label">Prayers</div></div></div>
+          <div class="stat-mini"><div class="sm-icon"><i class="ti ti-check"></i></div><div><div class="sm-num" id="s-answered">0</div><div class="sm-label">Answered</div></div></div>
+          <div class="stat-mini"><div class="sm-icon"><i class="ti ti-users"></i></div><div><div class="sm-num">2.8K</div><div class="sm-label">Praying Now</div></div></div>
+        </div>
+        <div class="verse-card">
+          <div class="vc-lbl">✦ Today's Verse</div>
+          <div class="vc-text" id="home-verse">"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God."</div>
+          <div class="vc-ref" id="home-verse-ref">Philippians 4:6</div>
+        </div>
+        <div class="whisper-card">
+          <div class="tw-top">
+            <div class="tw-label">✦ Today's Whisper</div>
+            <div class="tw-pill" id="tw-time">Morning</div>
+          </div>
+          <div class="tw-text" id="tw-text">You do not have to carry today alone. Breathe, begin gently, and let God order your steps.</div>
+          <div class="tw-ref" id="tw-ref">Psalm 37:23</div>
+        </div>
+        <div class="rhythm-card">
+          <div class="rhythm-head">
+            <div class="rhythm-title">Daily <em>Rhythms</em></div>
+            <div class="rhythm-note" id="rhythm-note">0/4 complete</div>
+          </div>
+          <div class="rhythm-list" id="rhythm-list"></div>
+          <div class="rhythm-actions">
+            <button class="rhythm-mini" onclick="requestRhythmNotifications()">Enable reminders</button>
+            <button class="rhythm-mini" onclick="resetRhythms()">Reset today</button>
+          </div>
+        </div>
+        <div class="qp-card">
+          <div class="qp-lbl">✦ Quick Prayer</div>
+          <textarea class="qp-ta" id="qp-ta" placeholder="Lord, today I need..." oninput="onQp()"></textarea>
+          <div class="qp-tags">
+            <div class="qp-tag" onclick="qpTag(this,'Anxiety & peace')">Anxiety</div>
+            <div class="qp-tag" onclick="qpTag(this,'Healing')">Healing</div>
+            <div class="qp-tag" onclick="qpTag(this,'Breakthrough')">Breakthrough</div>
+            <div class="qp-tag" onclick="qpTag(this,'Gratitude')">Gratitude</div>
+            <div class="qp-tag" onclick="qpTag(this,'Guidance')">Purpose</div>
+          </div>
+          <button class="btn-gold" id="qp-btn" style="margin-top:12px;" disabled onclick="goToPray()">✦ Generate Prayer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRAY -->
+    <div class="screen" id="screen-pray">
+      <div class="page-header">
+        <div class="ph-eye">✦ Prayer Generator</div>
+        <div class="ph-title">What are you <em>carrying?</em></div>
+      </div>
+      <div style="padding:18px 22px;display:flex;flex-direction:column;gap:14px;flex:1;padding-bottom:30px;">
+        <textarea class="inp" id="pray-ta" style="height:100px;" placeholder="Share your heart... Lord, I need..." oninput="onPray()"></textarea>
+        <div class="tags" id="pray-tags">
+          <div class="tag" onclick="pTag(this,'Anxiety & worry')">Anxiety</div>
+          <div class="tag" onclick="pTag(this,'Healing & health')">Healing</div>
+          <div class="tag" onclick="pTag(this,'Financial breakthrough')">Finances</div>
+          <div class="tag" onclick="pTag(this,'My marriage & family')">Family</div>
+          <div class="tag" onclick="pTag(this,'Career & purpose')">Purpose</div>
+          <div class="tag" onclick="pTag(this,'Grief & loss')">Grief</div>
+          <div class="tag" onclick="pTag(this,'Fear & uncertainty')">Fear</div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,230,204,0.24);margin-bottom:7px;">Prayer Style</div>
+          <div class="style-row">
+            <div class="style-chip active" onclick="sStyle(this,'intimate')"><i class="ti ti-heart"></i>Intimate</div>
+            <div class="style-chip" onclick="sStyle(this,'bold')"><i class="ti ti-sword"></i>Bold</div>
+            <div class="style-chip" onclick="sStyle(this,'quiet')"><i class="ti ti-feather"></i>Quiet</div>
+            <div class="style-chip" onclick="sStyle(this,'liturgical')"><i class="ti ti-book"></i>Liturgical</div>
+          </div>
+        </div>
+        <button class="btn-gold" id="pray-btn" disabled onclick="genPrayer()">✦ Generate My Prayer</button>
+        <div class="pray-loading" id="pray-loading">
+          <div class="pl-orb"><i class="ti ti-flame"></i></div>
+          <div class="pl-wave"><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div><div class="wbar"></div></div>
+          <div class="pl-phrase" id="pl-phrase">Listening to your heart...</div>
+        </div>
+        <div class="pray-result" id="pray-result">
+          <div class="pr-card">
+            <div class="pr-lbl">✦ Your Prayer</div>
+            <div class="pr-text" id="pr-text"></div>
+          </div>
+          <button class="btn-gold" onclick="saveToJournal()">✦ Save to Journal</button>
+          <button class="btn-ghost" onclick="genPrayer()">Regenerate</button>
+          <button class="btn-ghost" onclick="resetPray()">New Prayer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="screen" id="screen-journal">
+      <div class="page-header">
+        <div class="ph-eye">✦ Prayer Journal</div>
+        <div class="ph-title">Your <em>Faith Record</em></div>
+      </div>
+      <div style="padding:16px 22px;display:flex;flex-direction:column;gap:12px;flex:1;padding-bottom:80px;">
+        <div class="j-stats">
+          <div class="js-item"><div class="js-num" id="js-tot" style="color:var(--cream)">0</div><div class="js-lbl">Total</div></div>
+          <div class="js-item"><div class="js-num" id="js-ans" style="color:var(--green)">0</div><div class="js-lbl">Answered</div></div>
+          <div class="js-item"><div class="js-num" id="js-bel" style="color:var(--gold)">0</div><div class="js-lbl">Believing</div></div>
+          <div class="js-item"><div class="js-num" id="js-rate" style="color:var(--el)">0%</div><div class="js-lbl">Rate</div></div>
+        </div>
+        <div class="j-filters">
+          <div class="jf active" onclick="fJournal('all',this)">All</div>
+          <div class="jf" onclick="fJournal('believing',this)">Believing</div>
+          <div class="jf" onclick="fJournal('answered',this)">✓ Answered</div>
+          <div class="jf" onclick="fJournal('new',this)">New</div>
+        </div>
+        <div class="j-list" id="j-list"></div>
+      </div>
+      <button class="j-add" onclick="openModal()"><i class="ti ti-plus"></i></button>
+    </div>
+
+    <!-- CIRCLES -->
+    <div class="screen" id="screen-circles">
+      <div class="page-header">
+        <div class="ph-eye">✦ Community</div>
+        <div class="ph-title">Prayer <em>Circles</em></div>
+      </div>
+      <div class="page-body">
+        <div style="font-size:13px;color:var(--cf);line-height:1.7;font-family:var(--serif);font-style:italic;">"Where two or three gather in My name, there I am with them." — Matthew 18:20</div>
+        <div class="circles-list" id="circles-list"></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen" id="screen-profile">
+      <div class="profile-hero">
+        <div class="ph-av" id="p-av">A</div>
+        <div class="ph-nm" id="p-nm">Beloved</div>
+        <div class="ph-plan" id="p-plan">✦ Seeker Plan</div>
+        <div class="ph-badges">
+          <div class="ph-badge">🔥 <span id="p-streak">0</span> Day Streak</div>
+          <div class="ph-badge">⚡ Level <span id="p-level">1</span></div>
+          <div class="ph-badge"><span id="p-prayers">0</span> Prayers</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="ps-title">Account</div>
+        <div class="ps-item"><i class="ti ti-bell"></i><span class="ps-lbl">Notifications</span><span class="ps-val">On</span><i class="ti ti-chevron-right" style="color:rgba(240,230,204,0.15);font-size:13px;"></i></div>
+        <div class="ps-item"><i class="ti ti-moon"></i><span class="ps-lbl">Prayer Time</span><span class="ps-val" id="p-time">Morning</span><i class="ti ti-chevron-right" style="color:rgba(240,230,204,0.15);font-size:13px;"></i></div>
+        <div class="ps-item"><i class="ti ti-microphone"></i><span class="ps-lbl">Prayer Style</span><span class="ps-val" id="p-style">Intimate</span><i class="ti ti-chevron-right" style="color:rgba(240,230,204,0.15);font-size:13px;"></i></div>
+      </div>
+      <div class="ps" style="padding-top:0;">
+        <div class="ps-title">Plan</div>
+        <div class="ps-item"><i class="ti ti-crown" style="color:var(--gold);"></i><span class="ps-lbl">Upgrade to Beloved</span><span class="ps-val" style="color:var(--gold);">$9.99/mo</span><i class="ti ti-chevron-right" style="color:rgba(240,230,204,0.15);font-size:13px;"></i></div>
+        <div class="ps-item"><i class="ti ti-shield"></i><span class="ps-lbl">Privacy Policy</span><i class="ti ti-chevron-right" style="color:rgba(240,230,204,0.15);font-size:13px;"></i></div>
+      </div>
+      <div style="padding:0 22px 40px;">
+        <button class="logout" onclick="doSignOut()"><i class="ti ti-logout" style="margin-right:8px;"></i>Sign Out</button>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" id="bnav" style="display:none;">
+    <div class="bn-item active" id="bn-home" onclick="go('home')"><i class="ti ti-home"></i><span>Home</span></div>
+    <div class="bn-item" id="bn-journal" onclick="go('journal')"><i class="ti ti-book"></i><span>Journal</span></div>
+    <div class="bn-center"><div class="bn-pray-btn" onclick="openSanctuary()"><i class="ti ti-sparkles"></i></div></div>
+    <div class="bn-item" id="bn-circles" onclick="go('circles')"><i class="ti ti-users"></i><span>Circles</span></div>
+    <div class="bn-item" id="bn-profile" onclick="go('profile')"><i class="ti ti-user"></i><span>Profile</span></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* CONFIG */
+const SB_URL='https://sctfagqozdkkogthixdq.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjdGZhZ3FvemRra29ndGhpeGRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNjgxOTAsImV4cCI6MjA5NDc0NDE5MH0.ctwPtA0X4Ks-60QzqS8cJji8Rp32jM6Gs3ppvT8DLoA';
+const db=supabase.createClient(SB_URL,SB_KEY);
+
+/* STATE */
+let user=null,profile={},prayers=[],circles=[],jFilter='all',pStyle='intimate',isGen=false,lastPrayer='';
+
+/* PARTICLES */
+(()=>{
+  const c=document.getElementById('amb'),x=c.getContext('2d');let W,H,ps=[];
+  const rsz=()=>{W=c.width=window.innerWidth;H=c.height=window.innerHeight;};rsz();window.addEventListener('resize',rsz);
+  class P{constructor(){this.reset();}reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*.9+.2;this.vx=(Math.random()-.5)*.12;this.vy=-(Math.random()*.16+.04);this.a=Math.random()*.35+.07;this.life=0;this.max=Math.random()*240+160;}tick(){this.life++;this.x+=this.vx;this.y+=this.vy;const a=this.a*Math.sin(Math.PI*(this.life/this.max));x.beginPath();x.arc(this.x,this.y,this.r,0,Math.PI*2);x.fillStyle=`rgba(201,168,76,${a})`;x.fill();if(this.life>=this.max)this.reset();}}
+  for(let i=0;i<55;i++){const p=new P();p.life=Math.random()*p.max;ps.push(p);}
+  (function loop(){x.clearRect(0,0,W,H);ps.forEach(p=>p.tick());requestAnimationFrame(loop);})();
+})();
+
+/* PWA */
+let dip=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e;document.getElementById('ib').classList.add('vis');});
+document.getElementById('ib-btn').onclick=async()=>{if(!dip)return;dip.prompt();const{outcome}=await dip.userChoice;if(outcome==='accepted')document.getElementById('ib').classList.remove('vis');dip=null;};
+
+/* DATE */
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const todayStr=()=>{const d=new Date();return `${DAYS[d.getDay()]} · ${MONS[d.getMonth()]} ${d.getDate()}`;};
+const shortDate=ts=>{const d=new Date(ts);return `${MONS[d.getMonth()].slice(0,3)} ${d.getDate()}, ${d.getFullYear()}`;};
+
+/* AUTH */
+let authMode='in';
+let authBusy=false;
+function switchTab(m){
+  authMode=m;
+  document.getElementById('tab-in').classList.toggle('active',m==='in');
+  document.getElementById('tab-up').classList.toggle('active',m==='up');
+  document.getElementById('name-field').style.display=m==='up'?'block':'none';
+  resetAuthButton();
+  document.getElementById('auth-err').textContent='';
+}
+function resetAuthButton(){
+  const btn=document.getElementById('auth-btn');
+  if(!btn)return;
+  btn.disabled=false;
+  btn.textContent=authMode==='in'?'✦ Sign In':'✦ Create Account';
+}
+async function enterApp(activeUser){
+  if(!activeUser)return;
+  user=activeUser;
+  document.getElementById('bnav').style.display='flex';
+  go('home',true);
+  resetAuthButton();
+
+  // Show the app immediately, then load database content safely.
+  profile={
+    name:user.user_metadata?.name || user.email?.split('@')[0] || 'Beloved',
+    email:user.email,
+    streak_count:0,
+    spirit_xp:0,
+    spirit_level:1,
+    total_prayers:0,
+    total_answered:0,
+    plan:'seeker',
+    prayer_style:'intimate',
+    prayer_time:'morning'
+  };
+  updateHome();
+
+  try{await loadProfile();}catch(e){console.warn('Profile load skipped:',e.message||e);}
+  try{await loadPrayers();}catch(e){console.warn('Prayer load skipped:',e.message||e);}
+  try{await loadCircles();}catch(e){console.warn('Circle load skipped:',e.message||e);}
+  updateHome();
+}
+async function doAuth(){
+  if(authBusy)return;
+  const email=document.getElementById('auth-email').value.trim();
+  const pw=document.getElementById('auth-pw').value;
+  const name=document.getElementById('auth-name-in').value.trim();
+  const errEl=document.getElementById('auth-err');
+  const btn=document.getElementById('auth-btn');
+  if(!email||!pw){errEl.textContent='Please enter your email and password.';return;}
+  if(pw.length<6){errEl.textContent='Password must be at least 6 characters.';return;}
+  authBusy=true;btn.disabled=true;btn.textContent='Please wait...';errEl.textContent='';
+  try{
+    if(authMode==='up'){
+      const{data,error}=await db.auth.signUp({email,password:pw,options:{data:{name:name||email.split('@')[0]}}});
+      if(error)throw error;
+
+      // If email confirmation is OFF, session should exist. If Supabase returns no session
+      // because the account already exists, try normal sign-in with the same password.
+      if(data?.session?.user){
+        toast('✦ Welcome to Shiloh Whispers!');
+        await enterApp(data.session.user);
+        return;
+      }
+      const signin=await db.auth.signInWithPassword({email,password:pw});
+      if(signin?.data?.session?.user){
+        toast('✦ Welcome back to Shiloh Whispers!');
+        await enterApp(signin.data.session.user);
+        return;
+      }
+      throw new Error('Account may already exist or needs confirmation. Try Sign In instead.');
+    } else {
+      const{data,error}=await db.auth.signInWithPassword({email,password:pw});
+      if(error)throw error;
+      if(!data?.session?.user)throw new Error('Could not start your session. Please try again.');
+      await enterApp(data.session.user);
+      return;
+    }
+  }catch(e){
+    console.error('Auth error:',e);
+    errEl.textContent=e.message||'Something went wrong. Please try again.';
+    resetAuthButton();
+  }finally{
+    authBusy=false;
+  }
+}
+async function doGoogle(){
+  const{error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
+  if(error) toast('Google sign-in is not configured yet.');
+}
+async function doSignOut(){await db.auth.signOut();user=null;profile={};prayers=[];document.getElementById('bnav').style.display='none';go('auth',true);resetAuthButton();}
+
+/* SESSION */
+db.auth.onAuthStateChange(async(event,session)=>{
+  if(session?.user && !user){
+    await enterApp(session.user);
+  }
+});
+
+/* PROFILE */
+async function loadProfile(){
+  const{data}=await db.from('profiles').select('*').eq('id',user.id).single();
+  if(data){profile=data;}
+  else{
+    const name=user.user_metadata?.name||user.email.split('@')[0];
+    await db.from('profiles').insert({id:user.id,email:user.email,name});
+    profile={name,email:user.email,streak_count:0,spirit_xp:0,spirit_level:1,total_prayers:0,total_answered:0,plan:'seeker',prayer_style:'intimate',prayer_time:'morning'};
+  }
+}
+async function loadPrayers(){
+  const{data}=await db.from('prayers').select('*').eq('user_id',user.id).order('created_at',{ascending:false});
+  prayers=data||[];renderJournal();updateJStats();
+}
+async function loadCircles(){
+  const{data}=await db.from('circles').select('*').order('member_count',{ascending:false});
+  circles=data||[];renderCircles();
+}
+
+/* HOME */
+function updateHome(){
+  const name=profile.name||'Beloved';
+  document.getElementById('home-name').textContent=name;
+  document.getElementById('home-date').textContent=todayStr();
+  document.getElementById('home-level').textContent=profile.spirit_level||1;
+  const xp=(profile.spirit_xp||0)%100;
+  document.getElementById('xp-fill').style.width=xp+'%';
+  document.getElementById('xp-pct').textContent=xp+'%';
+  document.getElementById('s-streak').textContent=profile.streak_count||0;
+  document.getElementById('s-prayers').textContent=profile.total_prayers||0;
+  document.getElementById('s-answered').textContent=profile.total_answered||0;
+  // profile screen
+  document.getElementById('p-av').textContent=(name[0]||'A').toUpperCase();
+  document.getElementById('p-nm').textContent=name;
+  document.getElementById('p-plan').textContent='✦ '+(profile.plan||'seeker').charAt(0).toUpperCase()+(profile.plan||'seeker').slice(1)+' Plan';
+  document.getElementById('p-streak').textContent=profile.streak_count||0;
+  document.getElementById('p-level').textContent=profile.spirit_level||1;
+  document.getElementById('p-prayers').textContent=profile.total_prayers||0;
+  document.getElementById('p-style').textContent=(profile.prayer_style||'intimate').charAt(0).toUpperCase()+(profile.prayer_style||'intimate').slice(1);
+  document.getElementById('p-time').textContent=(profile.prayer_time||'morning').charAt(0).toUpperCase()+(profile.prayer_time||'morning').slice(1);
+  renderWhisper();renderRhythms();
+}
+
+
+
+
+/* DAILY WHISPERS + RHYTHMS */
+const whispers=[
+  {text:'You do not have to carry today alone. Breathe, begin gently, and let God order your steps.',ref:'Psalm 37:23',time:'Morning'},
+  {text:'Peace is not the absence of pressure; it is the presence of God in the middle of it.',ref:'John 14:27',time:'Midday'},
+  {text:'Before you sleep, release the weight. The Lord neither sleeps nor slumbers.',ref:'Psalm 121:4',time:'Evening'},
+  {text:'What feels delayed is not forgotten. Keep your heart steady and your hands faithful.',ref:'Isaiah 40:31',time:'Today'}
+];
+const rhythmDefaults=[
+  {id:'morning_prayer',name:'Morning Prayer',time:'7:00 AM',icon:'ti-sun'},
+  {id:'midday_pause',name:'Midday Pause',time:'12:00 PM',icon:'ti-clock'},
+  {id:'gratitude_check',name:'Gratitude Check-in',time:'5:00 PM',icon:'ti-heart'},
+  {id:'night_reflection',name:'Night Reflection',time:'9:00 PM',icon:'ti-moon'}
+];
+function rhythmKey(){return 'shiloh_rhythms_'+new Date().toISOString().slice(0,10);}
+function getRhythmState(){try{return JSON.parse(localStorage.getItem(rhythmKey())||'{}')}catch(e){return {}}}
+function setRhythmState(s){localStorage.setItem(rhythmKey(),JSON.stringify(s));}
+function renderWhisper(){
+  const h=new Date().getHours();let idx=h<11?0:h<17?1:h<21?3:2;
+  const w=whispers[idx];
+  const tx=document.getElementById('tw-text'),rf=document.getElementById('tw-ref'),tm=document.getElementById('tw-time');
+  if(tx){tx.textContent=w.text;rf.textContent=w.ref;tm.textContent=w.time;}
+}
+function renderRhythms(){
+  const list=document.getElementById('rhythm-list'); if(!list)return;
+  const state=getRhythmState();
+  list.innerHTML=rhythmDefaults.map(r=>`<div class="rhythm-item ${state[r.id]?'done':''}"><div class="ri-icon"><i class="ti ${r.icon}"></i></div><div class="ri-body"><div class="ri-name">${r.name}</div><div class="ri-time">${r.time}</div></div><div class="ri-check" onclick="toggleRhythm('${r.id}')"><i class="ti ti-check"></i></div></div>`).join('');
+  const done=rhythmDefaults.filter(r=>state[r.id]).length;
+  const note=document.getElementById('rhythm-note'); if(note)note.textContent=done+'/'+rhythmDefaults.length+' complete';
+}
+function toggleRhythm(id){const s=getRhythmState();s[id]=!s[id];setRhythmState(s);renderRhythms();toast(s[id]?'✦ Rhythm completed':'Rhythm reopened');}
+function resetRhythms(){localStorage.removeItem(rhythmKey());renderRhythms();toast('✦ Daily rhythms reset');}
+async function requestRhythmNotifications(){
+  if(!('Notification' in window)){toast('Notifications are not supported here');return;}
+  const p=await Notification.requestPermission();
+  if(p==='granted'){
+    toast('✦ Spiritual rhythm reminders enabled');
+    scheduleInAppRhythmReminders();
+  } else toast('Notifications were not enabled');
+}
+function scheduleInAppRhythmReminders(){
+  if(!('Notification' in window)||Notification.permission!=='granted')return;
+  rhythmDefaults.forEach((r,i)=>{
+    setTimeout(()=>{try{new Notification('Shiloh Whispers', {body:r.name+' — a gentle moment to return to God.'});}catch(e){}}, (i+1)*45000);
+  });
+}
+async function typePrayer(el,text){
+  for(let i=0;i<text.length;i++){
+    el.textContent=text.slice(0,i+1);
+    await new Promise(r=>setTimeout(r,8));
+  }
+}
+
+/* QUICK PRAY */
+function onQp(){document.getElementById('qp-btn').disabled=document.getElementById('qp-ta').value.trim().length<4;}
+function qpTag(el,t){document.querySelectorAll('.qp-tag').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');document.getElementById('qp-ta').value=t+'. ';onQp();}
+function goToPray(){const t=document.getElementById('qp-ta').value;document.getElementById('pray-ta').value=t;onPray();go('pray');}
+
+/* PRAYER */
+const phrases=['Listening to your heart...','Searching the scriptures...','Weaving your prayer...','Seeking His presence...','Almost ready...'];
+const styleDesc={intimate:'intimate and conversational, like talking to a loving Father',bold:'bold and declarative, claiming God\'s promises in faith',quiet:'quiet, contemplative and surrendered in God\'s presence',liturgical:'rich, scriptural and reverent, drawing from Biblical language'};
+
+function onPray(){document.getElementById('pray-btn').disabled=document.getElementById('pray-ta').value.trim().length<5||isGen;}
+function pTag(el,t){document.querySelectorAll('#pray-tags .tag').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('pray-ta').value=t+'. ';onPray();}
+function sStyle(el,s){document.querySelectorAll('.style-chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');pStyle=s;}
+
+function detectPrayerMood(text){
+  const t=(text||'').toLowerCase();
+  if(/anx|worr|fear|panic|overwhelm|stress|peace/.test(t)) return 'anxiety';
+  if(/heal|sick|pain|hospital|health|recover/.test(t)) return 'healing';
+  if(/money|finance|rent|bill|debt|job|work|career|business/.test(t)) return 'provision';
+  if(/marriage|husband|wife|family|child|children|mother|father|relationship/.test(t)) return 'family';
+  if(/grief|loss|cry|sad|broken|lonely/.test(t)) return 'comfort';
+  if(/thank|grateful|gratitude|praise/.test(t)) return 'gratitude';
+  if(/purpose|direction|confus|decision|next step|guide/.test(t)) return 'direction';
+  return 'general';
+}
+
+const prayerBanks={
+  anxiety:{
+    ref:'Philippians 4:6-7',
+    opening:'Father of peace, I come to You with an honest heart.',
+    body:'Quiet every anxious thought and remind me that I am not walking through this moment alone. Let Your peace guard my heart and mind. Help me breathe slowly, think clearly, and trust that You are already working in what I cannot control.',
+    close:'Today, I receive Your calm, Your wisdom, and Your steady presence.'
+  },
+  healing:{
+    ref:'Jeremiah 30:17',
+    opening:'Lord my healer, I bring this need before You.',
+    body:'Touch every place that feels weak, tired, wounded, or afraid. Strengthen the body, restore the mind, and renew the spirit. Let hope rise again, and surround this situation with Your mercy and Your power.',
+    close:'I trust Your timing, Your care, and Your healing hand.'
+  },
+  provision:{
+    ref:'Matthew 6:33',
+    opening:'Provider God, I place my needs in Your hands.',
+    body:'Give me wisdom for every decision, discipline for every responsibility, and favor where I need open doors. Remove fear from my heart and teach me to seek You first while You order the details of my life.',
+    close:'I believe You will supply what is needed and guide my next step.'
+  },
+  family:{
+    ref:'Joshua 24:15',
+    opening:'Father, I lift my family and relationships before You.',
+    body:'Bring peace where there is tension, patience where there is frustration, and love where there has been distance. Teach me to speak with grace, listen with humility, and carry my loved ones in prayer instead of worry.',
+    close:'Let my home and relationships be covered by Your presence.'
+  },
+  comfort:{
+    ref:'Psalm 34:18',
+    opening:'God of comfort, draw near to my heart.',
+    body:'Meet me in the places words cannot fully explain. Hold what feels heavy. Heal what feels broken. Remind me that tears are seen by You and that Your presence is close to the hurting.',
+    close:'Let Your nearness become my strength today.'
+  },
+  gratitude:{
+    ref:'Psalm 103:2',
+    opening:'Lord, thank You for Your goodness.',
+    body:'Help me not rush past the blessings You have already placed in my life. Open my eyes to small mercies, quiet victories, and answered prayers I may have overlooked. Let gratitude strengthen my faith.',
+    close:'May my heart remain thankful in every season.'
+  },
+  direction:{
+    ref:'Proverbs 3:5-6',
+    opening:'Father, I need Your direction.',
+    body:'Order my steps and quiet the confusion around me. Give me wisdom beyond my own understanding. Close doors that are not for me, open the right ones, and give me courage to obey when You lead.',
+    close:'I trust You to make the path clear in Your perfect time.'
+  },
+  general:{
+    ref:'Psalm 23:1',
+    opening:'Heavenly Father, I come before You today.',
+    body:'You know what I carry, what I need, and what I cannot fully say. Meet me with grace. Strengthen my faith. Lead me into peace, and remind me that Your presence is enough for this moment.',
+    close:'I surrender this day to You and receive Your help.'
+  }
+};
+
+function buildLocalPrayer(heart,style){
+  const mood=detectPrayerMood(heart);
+  const b=prayerBanks[mood]||prayerBanks.general;
+  const userNeed=(heart||'this situation').replace(/\s+/g,' ').trim();
+  const styleLine={
+    intimate:'Speak to me gently and help me feel close to You.',
+    bold:'Strengthen my spirit and help me stand firmly on Your promises.',
+    quiet:'Teach me to be still, to listen, and to rest in Your presence.',
+    liturgical:'Let my heart be anchored in Your Word and shaped by holy surrender.'
+  }[style]||'Draw my heart closer to You.';
+
+  return `${b.opening}
+
+You see what is on my heart: ${userNeed}. ${b.body}
+
+${styleLine}
+
+Your Word reminds me in ${b.ref} that You are near, faithful, and able. ${b.close}
+
+In Jesus' name. Amen.`;
+}
+
+async function genPrayer(){
+  if(isGen)return;
+  const heart=document.getElementById('pray-ta').value.trim();
+  if(!heart||heart.length<5)return;
+  isGen=true;document.getElementById('pray-btn').disabled=true;
+  document.getElementById('pray-result').classList.remove('visible');
+  document.getElementById('pray-loading').classList.add('visible');
+  let pi=0;
+  const pInt=setInterval(()=>{pi=(pi+1)%phrases.length;document.getElementById('pl-phrase').textContent=phrases[pi];},900);
+
+  await new Promise(r=>setTimeout(r,1300));
+  clearInterval(pInt);
+
+  document.getElementById('pray-loading').classList.remove('visible');
+  document.getElementById('pray-result').classList.add('visible');
+
+  const el=document.getElementById('pr-text');
+  el.textContent='';
+  el.classList.add('streaming');
+
+  lastPrayer=buildLocalPrayer(heart,pStyle);
+  await typePrayer(el,lastPrayer);
+  el.classList.remove('streaming');
+
+  await updateStreak();
+  isGen=false;
+  document.getElementById('pray-btn').disabled=false;
+}
+
+
+function resetPray(){document.getElementById('pray-ta').value='';document.getElementById('pr-text').textContent='';document.getElementById('pray-result').classList.remove('visible');document.getElementById('pray-loading').classList.remove('visible');lastPrayer='';document.querySelectorAll('#pray-tags .tag').forEach(t=>t.classList.remove('active'));document.getElementById('pray-btn').disabled=true;isGen=false;}
+
+async function saveToJournal(){
+  if(!lastPrayer||!user)return;
+  const cat=document.querySelector('#pray-tags .tag.active')?.textContent||'Prayer';
+  const{error}=await db.from('prayers').insert({user_id:user.id,text:lastPrayer,category:cat,style:pStyle,status:'believing',notes:''});
+  if(!error){
+    await db.from('profiles').update({total_prayers:(profile.total_prayers||0)+1}).eq('id',user.id);
+    profile.total_prayers=(profile.total_prayers||0)+1;
+    await loadPrayers();updateHome();toast('✦ Saved to your Journal');
+  }
+}
+
+async function updateStreak(){
+  if(!user)return;
+  try{await db.rpc('update_streak',{p_user_id:user.id});await db.rpc('add_xp',{p_user_id:user.id,p_xp:10});}catch(e){}
+  await loadProfile();updateHome();
+}
+
+/* JOURNAL */
+function renderJournal(){
+  const list=document.getElementById('j-list');
+  const f=jFilter==='all'?prayers:prayers.filter(p=>p.status===jFilter);
+  if(!f.length){list.innerHTML=`<div class="empty-sanctuary"><div class="empty-icon"><i class="ti ti-book"></i></div><div class="empty-title">Begin your <em>Faith Record</em></div><div class="empty-copy">Your prayers, whispers, and answered testimonies will live here beautifully.</div><button class="empty-btn" onclick="openModal()"><i class="ti ti-plus"></i> Add first prayer</button></div>`;return;}
+  list.innerHTML=f.map(p=>`<div class="j-item" onclick="openDetail('${p.id}')"><div class="j-dot ${p.status}"></div><div class="j-body"><div class="j-text">${p.text}</div><div class="j-meta"><div class="j-cat">${p.category}</div><div class="j-date">${shortDate(p.created_at)}</div><div class="j-st ${p.status}">${p.status==='answered'?'✓ Answered':p.status==='believing'?'Believing':'New'}</div></div></div></div>`).join('');
+}
+function updateJStats(){
+  const tot=prayers.length,ans=prayers.filter(p=>p.status==='answered').length,bel=prayers.filter(p=>p.status==='believing').length,rate=tot?Math.round(ans/tot*100):0;
+  document.getElementById('js-tot').textContent=tot;document.getElementById('js-ans').textContent=ans;document.getElementById('js-bel').textContent=bel;document.getElementById('js-rate').textContent=rate+'%';
+}
+function fJournal(f,el){jFilter=f;document.querySelectorAll('.jf').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderJournal();}
+
+/* DETAIL */
+function openDetail(id){
+  const p=prayers.find(x=>x.id===id);if(!p)return;
+  const b=document.getElementById('jd-badge');
+  b.className='jd-badge '+(p.status==='answered'?'answered':'believing');
+  b.textContent=p.status==='answered'?'✓ Answered':'Believing';
+  document.getElementById('jd-scroll').innerHTML=`
+    <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">${p.category} · ${shortDate(p.created_at)}</div>
+    <div class="jd-prayer"><div class="jd-plbl">✦ Your Prayer</div><div class="jd-ptext">${p.text}</div></div>
+    ${p.answered_text?`<div class="jd-answered vis"><div class="jd-albl">✦ God Answered This Prayer</div><div class="jd-atext">${p.answered_text}</div></div>`:''}
+    <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:7px;">Notes</div>
+    <textarea class="jd-notes" placeholder="Add a note or testimony..." onchange="updateNote('${id}',this.value)">${p.notes||''}</textarea>
+    ${p.status!=='answered'?`<button class="jd-mark" onclick="markAnswered('${id}')"><i class="ti ti-check"></i> Mark as Answered</button>`:`<button class="jd-mark done"><i class="ti ti-check"></i> Answered ✦</button>`}
+  `;
+  document.getElementById('j-detail').classList.add('open');
+}
+function closeDetail(){document.getElementById('j-detail').classList.remove('open');}
+async function markAnswered(id){
+  await db.from('prayers').update({status:'answered',answered_text:'God answered this prayer. Glory to His name.',answered_date:new Date().toISOString().split('T')[0]}).eq('id',id);
+  await db.from('profiles').update({total_answered:(profile.total_answered||0)+1}).eq('id',user.id);profile.total_answered=(profile.total_answered||0)+1;
+  try{await db.rpc('add_xp',{p_user_id:user.id,p_xp:25});}catch(e){}
+  await loadProfile();await loadPrayers();updateHome();closeDetail();toast('✦ Marked as answered! Glory to God.');
+}
+async function updateNote(id,v){await db.from('prayers').update({notes:v}).eq('id',id);const p=prayers.find(x=>x.id===id);if(p)p.notes=v;}
+
+/* MODAL */
+function openModal(){document.getElementById('new-modal').classList.add('open');}
+function closeModal(){document.getElementById('new-modal').classList.remove('open');}
+function selCat(el){document.querySelectorAll('.ms-cat').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+async function saveEntry(){
+  const ta=document.getElementById('modal-ta');const cat=document.querySelector('.ms-cat.sel')?.textContent||'Prayer';
+  if(!ta.value.trim()||!user)return;
+  await db.from('prayers').insert({user_id:user.id,text:ta.value.trim(),category:cat,status:'new',notes:''});
+  await db.from('profiles').update({total_prayers:(profile.total_prayers||0)+1}).eq('id',user.id);profile.total_prayers=(profile.total_prayers||0)+1;
+  ta.value='';closeModal();await loadPrayers();updateHome();toast('✦ Prayer saved to Journal');
+}
+
+/* CIRCLES */
+function renderCircles(){
+  const list=document.getElementById('circles-list');
+  if(!circles.length){list.innerHTML=`<div class="empty-sanctuary"><div class="empty-icon"><i class="ti ti-users"></i></div><div class="empty-title">Prayer <em>Circles</em> are preparing</div><div class="empty-copy">Soon you will join peaceful circles for healing, family, purpose, and encouragement.</div><button class="empty-btn" onclick="toast('✦ Circle creation is coming soon')"><i class="ti ti-heart-handshake"></i> Coming soon</button></div>`;return;}
+  list.innerHTML=circles.map(c=>`<div class="cc"><div class="cc-icon"><i class="ti ${c.icon||'ti-users'}"></i></div><div class="cc-body"><div class="cc-name">${c.name}</div><div class="cc-count">${(c.member_count||0).toLocaleString()} members</div>${c.is_live?'<div class="cc-live"><div class="cc-live-dot"></div>Live now</div>':''}</div><div class="cc-join" onclick="joinCircle('${c.id}',this)">Join</div></div>`).join('');
+}
+async function joinCircle(id,el){
+  if(!user)return;
+  await db.from('circle_members').insert({circle_id:id,user_id:user.id}).then(()=>{});
+  el.textContent='✓ Joined';el.classList.add('joined');toast('✦ You joined the circle');
+}
+
+/* NAV */
+function go(name,skipAnim){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active','enter'));
+  const s=document.getElementById('screen-'+name);
+  s.classList.add('active');if(!skipAnim)s.classList.add('enter');
+  ['home','journal','circles','profile'].forEach(n=>{const el=document.getElementById('bn-'+n);if(el)el.classList.toggle('active',n===name);});
+}
+
+
+function openSanctuary(){const m=document.getElementById('magic-ov');if(m)m.classList.add('open');}
+function closeSanctuary(){const m=document.getElementById('magic-ov');if(m)m.classList.remove('open');}
+
+/* TOAST */
+function toast(msg){const t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+/* INIT */
+(async()=>{
+  try{
+    const{data:{session}}=await db.auth.getSession();
+    if(session?.user){await enterApp(session.user);}
+    else{go('auth',true);document.getElementById('bnav').style.display='none';resetAuthButton();}
+  }catch(e){
+    console.error('Initial session error:',e);
+    go('auth',true);document.getElementById('bnav').style.display='none';resetAuthButton();
+  }
+  renderWhisper();renderRhythms();
+})();
+</script>
+</body>
+</html>
