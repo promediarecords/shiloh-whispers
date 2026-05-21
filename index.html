@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#090805" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Shiloh Whispers" />
+<title>Shiloh Whispers</title>
+<style>
+:root{
+  --bg:#090805;--bg2:#120f09;--card:#1c170f;--card2:#241d12;--gold:#d4b557;--gold2:#f1d77b;
+  --cream:#faf4e6;--muted:rgba(250,244,230,.62);--soft:rgba(250,244,230,.35);--line:rgba(212,181,87,.16);
+  --green:#79c58f;--red:#d86969;--nav:68px;--serif:Georgia,'Times New Roman',serif;--sans:system-ui,-apple-system,Segoe UI,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#050403;color:var(--cream);font-family:var(--sans);overflow:hidden}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(800px 500px at 50% 0%,rgba(212,181,87,.13),transparent 65%),radial-gradient(700px 500px at 15% 90%,rgba(212,181,87,.05),transparent 70%),linear-gradient(180deg,#090805,#050403);pointer-events:none}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}.shell{position:fixed;inset:0;z-index:2;display:flex;justify-content:center;align-items:center;padding:0}.phone{width:100%;height:100%;max-width:460px;background:radial-gradient(360px 240px at 50% 0%,rgba(212,181,87,.09),transparent 72%),var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden}.phone:before{display:none;content:"";position:absolute;top:12px;left:50%;transform:translateX(-50%);width:96px;height:6px;border-radius:20px;background:rgba(250,244,230,.08);z-index:40}
+@media(min-width:760px){.shell{padding:14px}.phone{height:min(920px,calc(100vh - 28px));border:1px solid rgba(212,181,87,.20);border-radius:36px;box-shadow:0 40px 140px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.03);}.phone:before{display:block}.screen{border-radius:36px 36px 0 0}}
+.screens{position:relative;flex:1;min-height:0}.screen{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;padding:84px 22px calc(var(--nav) + 28px);scrollbar-width:thin;scrollbar-color:rgba(212,181,87,.55) rgba(255,255,255,.04)}.screen.active{display:block;animation:enter .28s ease both}.screen::-webkit-scrollbar{width:8px}.screen::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:10px}.screen::-webkit-scrollbar-thumb{background:rgba(212,181,87,.55);border-radius:10px}@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.nav{
+height:78px;
+display:none;
+align-items:center;
+justify-content:space-around;
+border-top:1px solid rgba(212,181,87,.10);
+background:rgba(8,6,3,.78);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+position:absolute;
+left:14px;
+right:14px;
+bottom:14px;
+z-index:20;
+border-radius:28px;
+box-shadow:0 10px 40px rgba(0,0,0,.45),0 0 30px rgba(212,181,87,.05);
+overflow:hidden;
+}
+.nav.show{display:flex}
+.nav button{background:none;border:0;color:rgba(250,244,230,.34);font-size:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;width:20%;height:100%;font-weight:650;letter-spacing:.1px}
+.nav button .ico{font-size:19px;line-height:1;filter:drop-shadow(0 0 0 transparent);transition:.25s}
+.nav button.active{color:var(--gold)}
+.nav button.active .ico{filter:drop-shadow(0 0 10px rgba(212,181,87,.22))}
+.nav button.active:before{content:"";position:absolute;top:0;width:42px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border-radius:0 0 10px 10px}
+.pray-fab{
+width:68px!important;
+height:68px!important;
+border-radius:50%!important;
+background:linear-gradient(135deg,var(--gold),var(--gold2))!important;
+color:#171104!important;
+justify-content:center!important;
+margin-top:-30px!important;
+box-shadow:0 0 0 8px rgba(212,181,87,.05),0 18px 40px rgba(212,181,87,.35)!important;
+position:relative;
+z-index:5;
+}
+.pray-fab .ico{font-size:24px!important}
+.pray-fab span:not(.ico){display:none}
+.brand{text-align:center;margin:18px 0 24px}.brand-mark{width:74px;height:74px;border:1px solid rgba(212,181,87,.4);border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:radial-gradient(circle,rgba(212,181,87,.20),rgba(212,181,87,.05));box-shadow:0 0 35px rgba(212,181,87,.16);font-family:var(--serif);font-size:30px;color:var(--gold)}.brand h1{font-family:var(--serif);font-weight:400;font-size:33px}.brand h1 em{color:var(--gold);font-style:italic}.brand p{font-family:var(--serif);font-style:italic;color:var(--soft);font-size:14px;margin-top:10px}.tabs{display:flex;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.03);margin-bottom:18px}.tabs button{flex:1;border:0;padding:13px;background:none;color:var(--soft);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer}.tabs button.active{background:rgba(212,181,87,.14);color:var(--gold)}label{font-size:9px;letter-spacing:2.4px;text-transform:uppercase;color:var(--gold);font-weight:700;margin:12px 0 7px;display:block}.inp,textarea{width:100%;border:1px solid rgba(212,181,87,.18);border-radius:18px;background:rgba(255,252,244,.04);color:var(--cream);outline:none;padding:16px;font-family:var(--serif);font-size:17px;line-height:1.5}.inp:focus,textarea:focus{border-color:rgba(212,181,87,.55);box-shadow:0 0 0 4px rgba(212,181,87,.05)}textarea{min-height:104px;resize:none}.btn{width:100%;border:0;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#171104;padding:16px 18px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;margin-top:16px;cursor:pointer;box-shadow:0 10px 30px rgba(212,181,87,.18)}.btn.secondary{background:transparent;color:var(--gold);border:1px solid rgba(212,181,87,.22);box-shadow:none}.btn.danger{background:transparent;color:var(--red);border:1px solid rgba(216,105,105,.28);box-shadow:none}.error{min-height:18px;text-align:center;color:var(--red);font-size:12px;margin-top:10px}.tiny{text-align:center;color:var(--soft);font-family:var(--serif);font-style:italic;font-size:13px;margin-top:18px;line-height:1.6}
+.eyebrow{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:800}.title{font-family:var(--serif);font-size:31px;font-weight:400;line-height:1.05;margin:9px 0 8px}.title em{color:var(--gold);font-style:italic}.sub{color:var(--muted);font-size:13px;line-height:1.7}.top{padding-top:28px;margin-bottom:18px}.date{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin:4px 0 16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:linear-gradient(180deg,rgba(255,252,244,.055),rgba(255,252,244,.015)),var(--card);border:1px solid rgba(212,181,87,.17);border-radius:24px;padding:20px;box-shadow:0 16px 48px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.04);position:relative;overflow:hidden}.card.glow:before{content:"";position:absolute;inset:0;background:radial-gradient(320px 160px at 80% 0%,rgba(212,181,87,.13),transparent 65%);pointer-events:none}.stat{display:flex;gap:12px;align-items:center}.stat .box{width:40px;height:40px;border-radius:14px;border:1px solid rgba(212,181,87,.18);display:grid;place-items:center;color:var(--gold);background:rgba(212,181,87,.07)}.stat b{font-family:var(--serif);font-size:27px}.stat small{color:var(--soft);font-size:10px}.verse{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.85;color:rgba(250,244,230,.86);position:relative}.ref{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold);margin-top:12px}.whisper{min-height:176px;display:flex;flex-direction:column;justify-content:center}.whisper .verse{font-size:21px}.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(212,181,87,.18);border-radius:999px;padding:7px 12px;color:var(--gold);font-size:10px;letter-spacing:1.3px;text-transform:uppercase;background:rgba(212,181,87,.07)}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.rhythm{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid rgba(212,181,87,.11);border-radius:17px;background:rgba(255,255,255,.02);margin-top:8px}.rhythm.done{background:rgba(121,197,143,.08);border-color:rgba(121,197,143,.22)}.check{margin-left:auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(212,181,87,.25);cursor:pointer}.done .check{background:var(--green);color:#071008}.section{margin-top:14px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.chip{border:1px solid rgba(212,181,87,.18);border-radius:999px;padding:8px 12px;color:var(--muted);font-size:12px;background:rgba(255,255,255,.02);cursor:pointer}.chip.active{color:var(--gold);border-color:var(--gold);background:rgba(212,181,87,.10)}
+.magic{position:fixed;inset:0;z-index:60;background:rgba(4,3,2,.94);display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(18px)}.magic.open{display:flex}.magic-card{width:100%;max-width:390px;text-align:center}.breath{width:164px;height:164px;border-radius:50%;margin:0 auto 28px;border:1px solid rgba(212,181,87,.28);display:grid;place-items:center;background:radial-gradient(circle,rgba(212,181,87,.22),rgba(212,181,87,.04),transparent 70%);animation:breathe 5s ease-in-out infinite;box-shadow:0 0 80px rgba(212,181,87,.18)}@keyframes breathe{0%,100%{transform:scale(.86);opacity:.72}50%{transform:scale(1.12);opacity:1}}.breath span{font-family:var(--serif);font-size:42px;color:var(--gold)}.magic h2{font-family:var(--serif);font-size:34px;font-weight:400}.magic p{font-family:var(--serif);font-size:18px;font-style:italic;line-height:1.8;color:var(--muted);margin:15px 0 22px}.empty{text-align:center;padding:42px 22px}.empty .moon{font-size:42px;margin-bottom:13px}.empty h3{font-family:var(--serif);font-size:25px;font-weight:400}.empty p{color:var(--muted);font-size:13px;line-height:1.7;margin:10px 0 20px}.journal-item{margin-top:10px}.journal-item p{font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.7;color:var(--muted)}.profile-hero{text-align:center;margin:10px 0 24px}.avatar{width:82px;height:82px;border-radius:50%;border:1px solid rgba(212,181,87,.35);display:grid;place-items:center;margin:0 auto 12px;background:rgba(212,181,87,.11);font-family:var(--serif);font-size:34px;color:var(--gold)}.setting{display:flex;align-items:center;gap:13px;padding:16px 0;border-bottom:1px solid rgba(212,181,87,.08)}.setting span:first-child{font-size:20px;color:var(--gold)}.setting b{flex:1;font-size:14px}.setting small{color:var(--soft)}
+.auth-only{max-width:370px;margin:0 auto}.hide{display:none!important}.spacer{height:24px}.toast{position:fixed;left:50%;bottom:calc(var(--nav) + 16px);transform:translate(-50%,80px);background:var(--card2);border:1px solid rgba(212,181,87,.28);border-radius:999px;padding:12px 18px;color:var(--cream);font-size:13px;z-index:90;transition:.3s;white-space:nowrap}.toast.show{transform:translate(-50%,0)}
+
+/* Daily dynamic sanctuary upgrades */
+.daily-card{animation:softReveal .7s ease both}.daily-card::after{content:"";position:absolute;inset:auto 18px 0 18px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,181,87,.42),transparent)}
+.reveal{transition:opacity .35s ease, transform .35s ease}.reveal.fade{opacity:0;transform:translateY(8px)}
+body.morning:before{background:radial-gradient(820px 520px at 50% 0%,rgba(241,196,92,.16),transparent 66%),radial-gradient(700px 500px at 15% 90%,rgba(212,181,87,.05),transparent 70%),linear-gradient(180deg,#100b05,#050403)}
+body.afternoon:before{background:radial-gradient(800px 500px at 50% 0%,rgba(212,181,87,.12),transparent 65%),radial-gradient(640px 500px at 15% 90%,rgba(212,181,87,.05),transparent 70%),linear-gradient(180deg,#090805,#050403)}
+body.evening:before{background:radial-gradient(760px 520px at 50% 0%,rgba(212,181,87,.09),transparent 68%),radial-gradient(550px 460px at 20% 92%,rgba(80,62,24,.08),transparent 70%),linear-gradient(180deg,#060504,#030302)}
+@keyframes softReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+
+/* Premium floating back button */
+.back-btn{
+position:absolute;
+top:14px;
+left:14px;
+width:46px;
+height:46px;
+border-radius:16px;
+border:1px solid rgba(212,181,87,.22);
+background:rgba(20,16,10,.72);
+backdrop-filter:blur(14px);
+-webkit-backdrop-filter:blur(14px);
+display:none;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+z-index:1000;
+transition:all .28s ease;
+box-shadow:0 0 0 1px rgba(255,255,255,.02),0 8px 24px rgba(0,0,0,.35);
+}
+.back-btn.show{display:flex}
+.back-btn:hover{
+transform:translateY(-2px) scale(1.03);
+border-color:rgba(212,175,55,.55);
+box-shadow:0 0 22px rgba(212,175,55,.18),0 10px 30px rgba(0,0,0,.42);
+}
+.back-btn svg{width:20px;height:20px;stroke:#f3d37a;stroke-width:2.4;fill:none}
+
+/* IMMERSIVE PEACE MODE + AUDIO EXPERIENCE */
+.magic{z-index:120!important;background:radial-gradient(ellipse at center,rgba(212,181,87,.12),transparent 55%),rgba(3,2,1,.96)!important}
+.magic.open .magic-card{animation:peaceRise .5s ease both}
+@keyframes peaceRise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.magic-card{max-width:410px!important}.peace-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:12px}.peace-guide{font-family:var(--serif);font-size:14px;color:var(--soft);font-style:italic;margin-top:-12px;margin-bottom:18px}.peace-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.peace-mini{display:flex;justify-content:center;gap:8px;align-items:center;color:var(--gold);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;margin-top:12px;opacity:.85}.audio-chip{border:1px solid rgba(212,181,87,.22);border-radius:999px;padding:10px 14px;color:var(--gold);background:rgba(212,181,87,.05);font-size:12px;letter-spacing:1.2px;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;cursor:pointer}.prayer-audio-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.breath span{animation:starPulse 2.6s ease-in-out infinite}@keyframes starPulse{0%,100%{opacity:.7;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
+
+
+
+/* Community polish + circle preview */
+.circle-card{padding:18px 18px 16px;border-radius:22px;cursor:pointer;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}.circle-card:active{transform:scale(.985)}.circle-card:hover{border-color:rgba(212,181,87,.30);box-shadow:0 18px 55px rgba(0,0,0,.34),0 0 34px rgba(212,181,87,.05)}
+.circle-title{font-size:19px;font-weight:800;letter-spacing:-.2px}.circle-meta{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.45}.circle-live{display:flex;align-items:center;gap:6px;margin-top:12px;color:var(--green);font-size:11px}.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(121,197,143,.55);animation:livePulse 1.8s ease-in-out infinite}@keyframes livePulse{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+.circle-join{border:1px solid rgba(212,181,87,.23);background:rgba(212,181,87,.07);color:var(--gold);border-radius:999px;padding:9px 14px;font-weight:800;font-size:12px;cursor:pointer}.circle-join.joined{background:rgba(121,197,143,.10);border-color:rgba(121,197,143,.26);color:var(--green)}
+.circle-preview{position:fixed;inset:0;z-index:95;background:rgba(4,3,2,.74);backdrop-filter:blur(18px);display:none;align-items:flex-end;justify-content:center;padding:18px}.circle-preview.open{display:flex}.circle-sheet{width:100%;max-width:420px;background:linear-gradient(180deg,rgba(255,252,244,.075),rgba(255,252,244,.018)),var(--card);border:1px solid rgba(212,181,87,.22);border-radius:28px;padding:24px 20px 22px;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 50px rgba(212,181,87,.08);animation:sheetUp .28s ease both}@keyframes sheetUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}.circle-sheet h3{font-family:var(--serif);font-size:30px;font-weight:400;margin:8px 0}.circle-sheet .recent{margin:16px 0;padding:16px;border-radius:20px;background:rgba(255,255,255,.035);border:1px solid rgba(212,181,87,.12);font-family:var(--serif);font-style:italic;color:rgba(250,244,230,.76);line-height:1.7}.circle-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(min-width:760px){.circle-preview{align-items:center}.circle-sheet{border-radius:30px}}
+
+/* Daily rhythm reminder system */
+.reminder-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.reminder-status{margin-top:10px;font-size:11px;line-height:1.6;color:var(--soft);text-align:center;font-family:var(--serif);font-style:italic}
+.reminder-on{color:var(--green)!important}
+.reminder-pulse{animation:reminderPulse 1.8s ease-in-out infinite}
+@keyframes reminderPulse{0%,100%{box-shadow:0 0 0 0 rgba(121,197,143,.18)}50%{box-shadow:0 0 0 8px rgba(121,197,143,0)}}
+
+
+
+/* PRAYER TIMELINE UPGRADE */
+.timeline-filters{display:flex;gap:8px;overflow-x:auto;margin:14px 0 4px;padding-bottom:4px;scrollbar-width:none}.timeline-filters::-webkit-scrollbar{display:none}.timeline-filter{border:1px solid rgba(212,181,87,.18);background:rgba(255,255,255,.025);color:var(--muted);border-radius:999px;padding:9px 13px;font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;cursor:pointer;white-space:nowrap}.timeline-filter.active{color:var(--gold);border-color:rgba(212,181,87,.55);background:rgba(212,181,87,.10);box-shadow:0 0 18px rgba(212,181,87,.08)}
+.timeline-group{margin-top:18px}.timeline-date{font-size:9px;letter-spacing:2.8px;text-transform:uppercase;color:var(--gold);font-weight:900;margin:0 0 10px 8px;opacity:.92}.timeline-wrap{position:relative;padding-left:16px}.timeline-wrap:before{content:"";position:absolute;left:4px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,rgba(212,181,87,.45),rgba(212,181,87,.06))}.timeline-item{margin:0 0 12px;position:relative;padding:18px 18px 16px 18px}.timeline-item:before{content:"";position:absolute;left:-17px;top:24px;width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 16px rgba(212,181,87,.55)}.timeline-item.answered{border-color:rgba(121,197,143,.32);box-shadow:0 18px 55px rgba(0,0,0,.35),0 0 35px rgba(121,197,143,.08)}.timeline-item.answered:before{background:var(--green);box-shadow:0 0 18px rgba(121,197,143,.65)}.timeline-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}.timeline-cat{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,181,87,.18);background:rgba(212,181,87,.06);border-radius:999px;padding:6px 10px;font-weight:900}.timeline-status{font-size:9px;letter-spacing:1.3px;text-transform:uppercase;border-radius:999px;padding:6px 10px;font-weight:900;white-space:nowrap}.timeline-status.believing{color:var(--gold);background:rgba(212,181,87,.08);border:1px solid rgba(212,181,87,.18)}.timeline-status.answered{color:var(--green);background:rgba(121,197,143,.10);border:1px solid rgba(121,197,143,.25)}.timeline-prayer{font-family:var(--serif);font-style:italic;font-size:16px;line-height:1.75;color:rgba(250,244,230,.76);margin-bottom:12px}.timeline-actions{display:flex;gap:8px;align-items:center;justify-content:space-between}.timeline-time{font-size:10px;color:var(--soft)}.answered-burst{animation:answeredBurst .7s ease both}@keyframes answeredBurst{0%{transform:scale(.98);box-shadow:0 0 0 rgba(121,197,143,0)}45%{transform:scale(1.015);box-shadow:0 0 42px rgba(121,197,143,.22)}100%{transform:none}}
+
+
+/* SW premium logo integration */
+.sw-logo{
+position:relative;
+overflow:hidden;
+background:
+radial-gradient(circle at 50% 45%, rgba(241,215,123,.28), rgba(212,181,87,.10) 45%, transparent 74%);
+box-shadow:
+0 0 38px rgba(212,181,87,.28),
+0 0 90px rgba(212,181,87,.10),
+inset 0 0 22px rgba(241,215,123,.07);
+}
+.sw-logo span{
+position:relative;
+z-index:2;
+font-family:var(--serif);
+font-size:26px;
+font-weight:700;
+letter-spacing:-2px;
+color:#f3d37a;
+text-shadow:
+0 0 18px rgba(241,215,123,.45),
+0 0 40px rgba(212,181,87,.20);
+}
+.sw-ring{
+position:absolute;
+inset:7px;
+border-radius:50%;
+border:1px solid rgba(241,215,123,.23);
+box-shadow:0 0 18px rgba(212,181,87,.16);
+animation:swGlow 4s ease-in-out infinite;
+}
+.sw-logo:after{
+content:"✦";
+position:absolute;
+top:8px;
+right:15px;
+font-size:15px;
+color:#fff0a6;
+text-shadow:0 0 12px rgba(241,215,123,.8);
+z-index:3;
+animation:swSpark 2.8s ease-in-out infinite;
+}
+@keyframes swGlow{
+0%,100%{transform:scale(.96);opacity:.55}
+50%{transform:scale(1.05);opacity:1}
+}
+@keyframes swSpark{
+0%,100%{opacity:.55;transform:scale(.88)}
+50%{opacity:1;transform:scale(1.12)}
+}
+
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="toast" id="toast">Saved</div>
+<div class="magic" id="peace">
+  <div class="magic-card">
+    <div class="peace-label">✦ Peace Mode</div>
+    <div class="breath"><span>✦</span></div>
+    <h2>Return to Peace</h2>
+    <div class="peace-guide">Breathe in for 4. Hold for 2. Release slowly.</div>
+    <p id="peaceText">Breathe slowly. You are not alone. God is near, and this moment will pass.</p>
+    <div class="peace-mini" id="peaceStatus">ambient sanctuary ready</div>
+    <div class="peace-actions">
+      <button class="btn" onclick="playFullPeaceMode()">🔊 Start Guided Peace</button>
+      <button class="btn secondary" onclick="nextPeace()">Continue Breathing</button>
+      <button class="btn secondary" onclick="toggleAmbient()">🌧️ Ambient Only</button>
+      <button class="btn secondary" onclick="closePeace()">Return to Shiloh</button>
+    </div>
+  </div>
+</div>
+
+<div class="circle-preview" id="circlePreview" onclick="if(event.target.id==='circlePreview')closeCirclePreview()">
+  <div class="circle-sheet">
+    <div class="eyebrow">✦ Prayer Circle</div>
+    <h3 id="circlePreviewTitle">Circle</h3>
+    <p class="sub" id="circlePreviewMeta">Members</p>
+    <div class="recent" id="circlePreviewRecent">“Lord, cover every heart represented here with peace and strength today.”</div>
+    <div class="circle-actions">
+      <button class="btn" style="margin-top:0" id="circlePreviewJoin" onclick="joinCircleFromPreview()">Join Circle</button>
+      <button class="btn secondary" style="margin-top:0" onclick="closeCirclePreview()">Close</button>
+    </div>
+  </div>
+</div>
+<div class="shell"><div class="phone">
+  <button class="back-btn" id="backBtn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <div class="screens">
+    <section class="screen active" id="auth"><div class="auth-only"><div class="brand"><div class="brand-mark sw-logo"><span>SW</span><div class="sw-ring"></div></div><h1>Shiloh <em>Whispers</em></h1><p>Where God Meets You</p></div><div class="tabs"><button class="active" id="signinTab" onclick="setAuth('in')">Sign In</button><button id="signupTab" onclick="setAuth('up')">Create Account</button></div><div id="nameWrap" class="hide"><label>Your Name</label><input class="inp" id="name" placeholder="What should Shiloh call you?" /></div><label>Email</label><input class="inp" id="email" type="email" placeholder="you@email.com" /><label>Password</label><input class="inp" id="password" type="password" placeholder="••••••••" /><div class="error" id="err"></div><button class="btn" id="authBtn" onclick="doAuth()">✦ Sign In</button><button class="btn secondary" onclick="guestAuth()">Explore Demo</button><p class="tiny">“Come to me, all who are weary and burdened, and I will give you rest.”<br>Matthew 11:28</p></div></section>
+    <section class="screen" id="home"><div class="top"><div class="date" id="today"></div><h2 class="title">Peace to you, <em id="userName">Beloved</em></h2><p class="sub">A quiet sanctuary for prayer, stillness, and daily spiritual rhythm.</p></div><div class="grid"><div class="card stat"><div class="box">🔥</div><div><b id="streak">0</b><br><small>Day Streak</small></div></div><div class="card stat"><div class="box">✦</div><div><b id="prayerCount">0</b><br><small>Prayers</small></div></div><div class="card stat"><div class="box">✓</div><div><b id="answered">0</b><br><small>Answered</small></div></div><div class="card stat"><div class="box">👥</div><div><b>2.8K</b><br><small>Praying Now</small></div></div></div><div class="card glow section daily-card"><div class="eyebrow">✦ Today's Verse</div><p class="verse reveal" id="dailyVerse">“Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.”</p><div class="ref" id="dailyRef">Philippians 4:6</div></div><div class="card glow section whisper daily-card" style="padding-bottom:95px;"><div class="row"><div class="eyebrow">✦ Today's Whisper</div><span class="pill" id="whisperMode">Morning</span></div><p class="verse reveal" id="whisperText">You do not have to carry today alone. Breathe, begin gently, and let God order your steps.</p><div class="ref" id="whisperRef">Psalm 37:23</div><button class="btn secondary" style="margin-top:14px" onclick="shareWhisper()">Share This Whisper</button></div><div class="card section"><div class="row"><h3 class="title" style="font-size:24px;margin:0">Daily <em>Rhythms</em></h3><small id="rhythmNote" class="sub">0/4 complete</small></div><div id="rhythms"></div><div class="reminder-row"><button class="btn secondary" style="margin-top:0" onclick="enableRhythmReminders()">🔔 Enable Reminders</button><button class="btn secondary" style="margin-top:0" onclick="openPeace()">Emergency Peace Mode</button></div><div class="reminder-status" id="reminderStatus">Reminders are off. Tap enable to receive prayer rhythm alerts while the app is open.</div></div><div class="card section"><div class="eyebrow">✦ Quick Prayer</div><textarea id="quickText" placeholder="Lord, today I need..."></textarea><button class="btn" onclick="quickPray()">Generate Prayer</button></div></section>
+    <section class="screen" id="pray"><div class="top"><div class="eyebrow">✦ Prayer Sanctuary</div><h2 class="title">What are you <em>carrying?</em></h2><p class="sub">Share your heart. Shiloh will shape a gentle, scripture-rooted prayer for peace.</p></div><textarea id="prayText" placeholder="Father, I come to You today about..."></textarea><div class="chips" id="chips"><button class="chip active" onclick="pickStyle(this,'comfort')">Comfort</button><button class="chip" onclick="pickStyle(this,'healing')">Healing</button><button class="chip" onclick="pickStyle(this,'strength')">Strength</button><button class="chip" onclick="pickStyle(this,'gratitude')">Gratitude</button></div><button class="btn" onclick="generatePrayer()">✦ Generate My Prayer</button><div id="prayerResult" class="card glow section hide"><div class="eyebrow">✦ Your Prayer</div><p class="verse" id="prayerOut"></p><button class="btn" onclick="savePrayer()">Save to Journal</button>
+<div class="prayer-audio-row">
+  <button class="btn secondary" onclick="playPrayerVoice()">🔊 Read Aloud</button>
+  <button class="btn secondary" onclick="openPeace()">✦ Peace Mode</button>
+</div>
+<button class="btn secondary" onclick="sharePrayer()">Copy Share Card Text</button></div></section>
+    <section class="screen" id="journal"><div class="top"><div class="eyebrow">✦ Prayer Journal</div><h2 class="title">Your <em>Faith Timeline</em></h2><p class="sub">Track what you prayed, what you are believing for, and what God has answered over time.</p></div><div class="grid"><div class="card stat"><div><b id="jTotal">0</b><br><small>Total</small></div></div><div class="card stat"><div><b id="jAnswered">0</b><br><small>Answered</small></div></div></div><div class="timeline-filters"><button class="timeline-filter active" onclick="setJournalFilter('all',this)">All</button><button class="timeline-filter" onclick="setJournalFilter('believing',this)">Believing</button><button class="timeline-filter" onclick="setJournalFilter('answered',this)">Answered</button></div><div id="journalList"></div></section>
+    <section class="screen" id="circles"><div class="top"><div class="eyebrow">✦ Community</div><h2 class="title">Prayer <em>Circles</em></h2><p class="sub">“Where two or three gather in My name, there I am with them.” — Matthew 18:20</p></div><div id="circleList"></div></section>
+    <section class="screen" id="profile"><div class="profile-hero"><div class="avatar" id="avatar">B</div><h2 class="title" id="profileName">Beloved</h2><p class="sub">Your quiet sanctuary since today</p></div><div class="card"><div class="setting"><span>🔔</span><b>Notifications</b><small>On</small></div><div class="setting"><span>🌙</span><b>Prayer Time</b><small>Morning</small></div><div class="setting"><span>🎙️</span><b>Prayer Style</b><small>Intimate</small></div><div class="setting"><span>👑</span><b>Upgrade to Beloved</b><small>$9.99/mo</small></div><div class="setting"><span>🛡️</span><b>Privacy Policy</b><small>Safe</small></div></div><button class="btn danger" onclick="signOut()">Sign Out</button></section>
+  </div>
+  <nav class="nav" id="nav">
+<button class="active" onclick="go('home',this)"><span class="ico">⌂</span><span>Home</span></button>
+<button onclick="go('journal',this)"><span class="ico">▤</span><span>Journal</span></button>
+<button class="pray-fab" onclick="go('pray')"><span class="ico">✦</span><span>Pray</span></button>
+<button onclick="go('circles',this)"><span class="ico">👥</span><span>Circles</span></button>
+<button onclick="go('profile',this)"><span class="ico">♙</span><span>Profile</span></button>
+</nav>
+</div></div>
+<audio id="peaceAudio" src="audio/peace_slow.mp3" preload="auto"></audio>
+<audio id="ambientAudio" src="audio/ambient_sanctuary.mp3" preload="auto" loop></audio>
+<script>
+const $=id=>document.getElementById(id);let authMode='in',style='comfort',currentPrayer='',journalFilter='all',user=JSON.parse(localStorage.getItem('sw_user')||'null'),journal=JSON.parse(localStorage.getItem('sw_journal')||'[]'),rhythmState=JSON.parse(localStorage.getItem('sw_rhythms_'+new Date().toDateString())||'{}');
+const prayers={comfort:['Father, wrap me in Your peace. Remind my heart that I am not carrying this alone. Let Your presence quiet every anxious thought and guide my next step with grace. Amen.','Lord, meet me in this moment. Where my heart feels heavy, breathe peace. Where my thoughts are loud, whisper truth. I receive Your calm today. Amen.'],healing:['Heavenly Father, touch every place that needs healing. Restore what is weary, strengthen what is weak, and let hope rise again in me. Amen.'],strength:['Lord, give me courage for today. Let my spirit stand firm, my mind stay clear, and my heart remain anchored in You. Amen.'],gratitude:['Father, thank You for breath, mercy, protection, and another day to begin again. Open my eyes to Your goodness today. Amen.']};
+const rhythms=[['morning','Morning Prayer','7:00 AM','☀️'],['pause','Midday Pause','12:00 PM','🕯️'],['gratitude','Gratitude Check-in','5:00 PM','♡'],['night','Night Reflection','9:00 PM','🌙']];
+const circles=[['Women of Prayer','1.2K members','Healing, family, peace','18 praying now','A mother asked for strength and healing for her home today.'],['Midnight Watch','824 members','Night prayers and strength','7 praying now','Someone is asking God for peace through the night and courage for tomorrow.'],['Purpose Circle','608 members','Direction and calling','12 praying now','A member is praying for clarity, discipline, and open doors.']];
+const peaceTexts=['Breathe slowly. You are not alone. God is near, and this moment will pass.','Inhale peace. Exhale fear. The Lord is your refuge and strength.','Your heart can rest here. One breath. One prayer. One moment at a time.'];let peaceIndex=0;
+const dailyVerses=[
+ ['The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.','Numbers 6:24-25'],
+ ['Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.','Philippians 4:6'],
+ ['The Lord is my shepherd; I shall not want.','Psalm 23:1'],
+ ['When I am afraid, I put my trust in You.','Psalm 56:3'],
+ ['Cast all your anxiety on Him because He cares for you.','1 Peter 5:7'],
+ ['Be still, and know that I am God.','Psalm 46:10'],
+ ['The joy of the Lord is your strength.','Nehemiah 8:10'],
+ ['Come to me, all you who are weary and burdened, and I will give you rest.','Matthew 11:28'],
+ ['I can do all this through Him who gives me strength.','Philippians 4:13'],
+ ['The Lord is close to the brokenhearted and saves those who are crushed in spirit.','Psalm 34:18'],
+ ['Peace I leave with you; my peace I give you.','John 14:27'],
+ ['Trust in the Lord with all your heart and lean not on your own understanding.','Proverbs 3:5'],
+ ['Those who hope in the Lord will renew their strength.','Isaiah 40:31'],
+ ['God is our refuge and strength, an ever-present help in trouble.','Psalm 46:1'],
+ ['Surely goodness and mercy shall follow me all the days of my life.','Psalm 23:6'],
+ ['The Lord will fight for you; you need only to be still.','Exodus 14:14'],
+ ['His mercies are new every morning.','Lamentations 3:23'],
+ ['You will keep in perfect peace those whose minds are steadfast.','Isaiah 26:3'],
+ ['My grace is sufficient for you, for my power is made perfect in weakness.','2 Corinthians 12:9'],
+ ['The steps of a good person are ordered by the Lord.','Psalm 37:23'],
+ ['Let all that you do be done in love.','1 Corinthians 16:14'],
+ ['Above all else, guard your heart.','Proverbs 4:23'],
+ ['The Lord is good, a refuge in times of trouble.','Nahum 1:7'],
+ ['I have loved you with an everlasting love.','Jeremiah 31:3'],
+ ['In peace I will lie down and sleep, for You alone, Lord, make me dwell in safety.','Psalm 4:8'],
+ ['The Spirit God gave us does not make us timid, but gives us power, love and self-discipline.','2 Timothy 1:7'],
+ ['Commit your way to the Lord; trust in Him and He will do this.','Psalm 37:5'],
+ ['The Lord is near to all who call on Him.','Psalm 145:18'],
+ ['Let the peace of Christ rule in your hearts.','Colossians 3:15'],
+ ['The name of the Lord is a fortified tower; the righteous run to it and are safe.','Proverbs 18:10']
+];
+const dailyWhispers={
+ morning:[
+  ['Grace is already ahead of you today. Begin softly.','Lamentations 3:23'],
+  ['You do not have to rush what God is gently ordering.','Psalm 37:23'],
+  ['Before the day asks anything of you, receive peace.','John 14:27'],
+  ['Start with one breath, one prayer, one faithful step.','Psalm 46:10'],
+  ['God is not late to your morning. He is already here.','Psalm 121:4']
+ ],
+ afternoon:[
+  ['Pause. You are not behind. Heaven is still moving with you.','Isaiah 40:31'],
+  ['Release the pressure to carry everything alone.','1 Peter 5:7'],
+  ['A quiet heart can still finish strong.','Nehemiah 8:10'],
+  ['God meets you in the middle of the day too.','Psalm 46:1'],
+  ['Breathe gently. You are being helped more than you can see.','Psalm 34:18']
+ ],
+ evening:[
+  ['Rest. The day is ending, but God is still watching.','Psalm 4:8'],
+  ['You can lay down what you were not meant to carry overnight.','Matthew 11:28'],
+  ['Let peace close the door on today.','Colossians 3:15'],
+  ['Even in silence, God is near.','Psalm 145:18'],
+  ['Sleep under mercy. Tomorrow has its own grace.','Lamentations 3:23']
+ ]
+};
+function dayNumber(){const d=new Date();return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000)}
+function timeMode(){const h=new Date().getHours();return h<12?'morning':h<17?'afternoon':'evening'}
+function applyDailySanctuary(){
+ const dn=dayNumber(), mode=timeMode();
+ document.body.classList.remove('morning','afternoon','evening');document.body.classList.add(mode);
+ const v=dailyVerses[dn%dailyVerses.length], group=dailyWhispers[mode], w=group[dn%group.length];
+ if($('dailyVerse')){$('dailyVerse').classList.add('fade');$('whisperText').classList.add('fade');setTimeout(()=>{ $('dailyVerse').textContent='“'+v[0]+'”';$('dailyRef').textContent=v[1];$('whisperText').textContent=w[0];$('whisperRef').textContent=w[1];$('whisperMode').textContent=mode.charAt(0).toUpperCase()+mode.slice(1);$('dailyVerse').classList.remove('fade');$('whisperText').classList.remove('fade');},180)}
+ const last=localStorage.getItem('sw_last_open'); const today=new Date().toDateString();
+ if(last!==today){localStorage.setItem('sw_last_open',today); let s=parseInt(localStorage.getItem('sw_peace_streak')||'0',10)+1; localStorage.setItem('sw_peace_streak',s)}
+}
+function shareWhisper(){const t=$('whisperText')?.textContent||'';const r=$('whisperRef')?.textContent||'';const msg=`Shiloh Whispers ✦\n\n${t}\n\n${r}`; if(navigator.share){navigator.share({title:'Today\'s Whisper',text:msg}).catch(()=>{})}else{navigator.clipboard?.writeText(msg);toast('Whisper copied')}}
+
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2400)}
+function setAuth(m){authMode=m;$('signinTab').classList.toggle('active',m==='in');$('signupTab').classList.toggle('active',m==='up');$('nameWrap').classList.toggle('hide',m==='in');$('authBtn').textContent=m==='in'?'✦ Sign In':'✦ Create Account';$('err').textContent=''}
+function doAuth(){let email=$('email').value.trim(),pw=$('password').value,name=$('name').value.trim();if(!email||!pw){$('err').textContent='Enter email and password.';return}user={name:name||email.split('@')[0],email};localStorage.setItem('sw_user',JSON.stringify(user));enterApp();toast(authMode==='up'?'Welcome to Shiloh Whispers':'Welcome back')}
+function guestAuth(){user={name:'Beloved',email:'demo@shiloh.local'};localStorage.setItem('sw_user',JSON.stringify(user));enterApp()}
+function enterApp(){go('home');$('nav').classList.add('show');updateAll()}
+
+function updateBackButton(id){const b=$('backBtn');if(!b)return;b.classList.toggle('show',!!user && id!=='home' && id!=='auth')}
+function goBack(){go('home')}
+function signOut(){stopAllAudio();localStorage.removeItem('sw_user');user=null;$('nav').classList.remove('show');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('auth').classList.add('active');updateBackButton('auth')}
+function go(id,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');updateBackButton(id);document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{let map={home:0,journal:1,circles:3,profile:4};let b=document.querySelectorAll('.nav button')[map[id]];if(b)b.classList.add('active')}}
+function updateAll(){applyDailySanctuary();let n=user?.name||'Beloved';$('userName').textContent=n;$('profileName').textContent=n;$('avatar').textContent=(n[0]||'B').toUpperCase();$('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();$('prayerCount').textContent=journal.length;$('jTotal').textContent=journal.length;$('jAnswered').textContent=journal.filter(j=>j.answered).length;$('answered').textContent=journal.filter(j=>j.answered).length;renderRhythms();renderJournal();renderCircles();updateReminderStatus();scheduleRhythmReminders()}
+function renderRhythms(){let done=0;$('rhythms').innerHTML=rhythms.map(r=>{if(rhythmState[r[0]])done++;return `<div class="rhythm ${rhythmState[r[0]]?'done':''}"><span>${r[3]}</span><div><b>${r[1]}</b><br><small class="sub">${r[2]}</small></div><div class="check" onclick="toggleRhythm('${r[0]}')">✓</div></div>`}).join('');$('rhythmNote').textContent=`${done}/4 complete`}
+function toggleRhythm(id){rhythmState[id]=!rhythmState[id];localStorage.setItem('sw_rhythms_'+new Date().toDateString(),JSON.stringify(rhythmState));renderRhythms();toast('Rhythm updated')}
+function pickStyle(el,s){style=s;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active')}
+function quickPray(){let t=$('quickText').value.trim();$('prayText').value=t;go('pray');generatePrayer()}
+function generatePrayer(){let text=$('prayText').value.trim();let base=prayers[style][Math.floor(Math.random()*prayers[style].length)];currentPrayer=text?`${base}\n\nLord, I also bring this before You: ${text}. Order my heart and guide my steps. Amen.`:base;$('prayerOut').textContent=currentPrayer;$('prayerResult').classList.remove('hide');toast('Prayer prepared')}
+function savePrayer(){if(!currentPrayer){generatePrayer()}journal.unshift({id:Date.now(),text:currentPrayer,date:new Date().toISOString(),answered:false,category:inferCategory(currentPrayer),style});localStorage.setItem('sw_journal',JSON.stringify(journal));updateAll();toast('Saved to Faith Timeline')}
+function sharePrayer(){navigator.clipboard?.writeText(`Shiloh Whispers ✦\n\n${currentPrayer}`).then(()=>toast('Share text copied'))}
+function setJournalFilter(f,el){journalFilter=f;document.querySelectorAll('.timeline-filter').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');renderJournal()}
+function inferCategory(text){let t=(text||'').toLowerCase();if(/heal|sick|health|body|pain/.test(t))return 'Healing';if(/family|marriage|child|children|mother|father|home/.test(t))return 'Family';if(/anx|fear|worry|peace|panic|stress/.test(t))return 'Peace';if(/money|finance|job|work|business|career/.test(t))return 'Provision';if(/thank|grateful|gratitude/.test(t))return 'Gratitude';if(/purpose|direction|clarity|calling/.test(t))return 'Purpose';return (style||'Prayer').charAt(0).toUpperCase()+(style||'Prayer').slice(1)}
+function groupLabel(dateStr){const d=new Date(dateStr),now=new Date();const startToday=new Date(now.getFullYear(),now.getMonth(),now.getDate());const startD=new Date(d.getFullYear(),d.getMonth(),d.getDate());const diff=Math.round((startToday-startD)/86400000);if(diff===0)return 'Today';if(diff<7)return 'This Week';return 'Older Prayers'}
+function renderJournal(){
+ if(!journal.length){$('journalList').innerHTML=`<div class="card empty"><div class="moon">🕯️</div><h3>Your first prayer belongs here</h3><p>Save prayers, mark answered prayers, and build your faith record over time.</p><button class="btn" onclick="go('pray')">Write First Prayer</button></div>`;return}
+ let items=journal.filter(j=>journalFilter==='all'?true:journalFilter==='answered'?j.answered:!j.answered);
+ if(!items.length){$('journalList').innerHTML=`<div class="card empty"><div class="moon">✦</div><h3>No ${journalFilter} prayers yet</h3><p>Your timeline will organize prayers here as you save and mark them answered.</p></div>`;return}
+ const groups={};items.forEach(j=>{const g=groupLabel(j.date);(groups[g]||(groups[g]=[])).push(j)});
+ $('journalList').innerHTML=Object.keys(groups).map(g=>`<div class="timeline-group"><div class="timeline-date">${g}</div><div class="timeline-wrap">${groups[g].map(j=>`<div class="card timeline-item ${j.answered?'answered':''}" id="prayer-${j.id}"><div class="timeline-top"><span class="timeline-cat">${j.category||inferCategory(j.text)}</span><span class="timeline-status ${j.answered?'answered':'believing'}">${j.answered?'✓ Answered':'Believing'}</span></div><p class="timeline-prayer">${j.text}</p><div class="timeline-actions"><small class="timeline-time">${new Date(j.date).toLocaleDateString()}</small><button class="chip ${j.answered?'active':''}" onclick="markAnswered(${j.id})">${j.answered?'Reopen':'Mark Answered'}</button></div></div>`).join('')}</div></div>`).join('')
+}
+function markAnswered(id){let becameAnswered=false;journal=journal.map(j=>{if(j.id===id){becameAnswered=!j.answered;return {...j,answered:!j.answered}}return j});localStorage.setItem('sw_journal',JSON.stringify(journal));updateAll();if(becameAnswered){setTimeout(()=>{const el=$('prayer-'+id);if(el)el.classList.add('answered-burst')},60);toast('Answered prayer marked ✨')}else{toast('Prayer moved back to believing')}}
+let activeCircleIndex=0;
+function renderCircles(){
+ $('circleList').innerHTML=circles.map((c,i)=>`<div class="card section circle-card" onclick="openCirclePreview(${i})"><div class="row"><div><div class="circle-title">${c[0]}</div><div class="circle-meta">${c[1]} • ${c[2]}</div><div class="circle-live"><span class="live-dot"></span>${c[3]}</div></div><button class="circle-join" onclick="event.stopPropagation();joinCircle(${i},this)">Join</button></div></div>`).join('')+`<div class="card empty"><div class="moon">✦</div><h3>Create your first sacred circle</h3><p>Invite friends, church members, or family to pray together.</p><button class="btn secondary" onclick="toast('Coming soon')">Create Circle</button></div>`
+}
+function openCirclePreview(i){activeCircleIndex=i;const c=circles[i];$('circlePreviewTitle').textContent=c[0];$('circlePreviewMeta').textContent=`${c[1]} • ${c[2]} • ${c[3]}`;$('circlePreviewRecent').textContent='“'+c[4]+'”';$('circlePreview').classList.add('open')}
+function closeCirclePreview(){$('circlePreview').classList.remove('open')}
+function joinCircle(i,btn){btn.classList.add('joined');btn.textContent='Joined';toast('Circle joined')}
+function joinCircleFromPreview(){toast('Circle joined');closeCirclePreview()}
+
+function setAudioVolumes(){let p=$('peaceAudio'),a=$('ambientAudio');if(p)p.volume=.95;if(a)a.volume=.18}
+function startAmbient(){setAudioVolumes();let a=$('ambientAudio');if(a){a.play().catch(()=>toast('Tap again to start ambient sound'))}}
+function stopAllAudio(){let p=$('peaceAudio'),a=$('ambientAudio');[p,a].forEach(x=>{if(x){x.pause();x.currentTime=0}})}
+function playPrayerVoice(){setAudioVolumes();startAmbient();let p=$('peaceAudio');if(p){p.currentTime=0;p.play().then(()=>toast('Voice playing')).catch(()=>toast('Tap again to play voice'))}}
+function playFullPeaceMode(){setAudioVolumes();startAmbient();let p=$('peaceAudio');if(p){p.currentTime=0;p.play().catch(()=>toast('Tap again to play voice'))}$('peaceStatus').textContent='guided peace is playing'}
+function toggleAmbient(){setAudioVolumes();let a=$('ambientAudio');if(!a)return;if(a.paused){a.play().then(()=>toast('Ambient sanctuary on')).catch(()=>toast('Tap again to start ambient'))}else{a.pause();toast('Ambient paused')}}
+function openPeace(){$('peace').classList.add('open');startAmbient();$('peaceStatus').textContent='ambient sanctuary playing'}
+function closePeace(){$('peace').classList.remove('open');stopAllAudio()}
+
+function nextPeace(){peaceIndex=(peaceIndex+1)%peaceTexts.length;$('peaceText').textContent=peaceTexts[peaceIndex];playPrayerVoice()}
+
+/* Daily Rhythm Reminder Engine — free, no API. Works while app is open. */
+let reminderTimers=[];
+function parseRhythmTime(label){
+  const parts=label.trim().split(/\s+/);
+  const hm=parts[0].split(':');
+  let h=parseInt(hm[0],10), m=parseInt(hm[1]||'0',10);
+  const ampm=(parts[1]||'').toUpperCase();
+  if(ampm==='PM' && h!==12)h+=12;
+  if(ampm==='AM' && h===12)h=0;
+  const d=new Date();d.setHours(h,m,0,0);
+  if(d.getTime()<=Date.now())d.setDate(d.getDate()+1);
+  return d;
+}
+function nextReminderText(){
+  const now=Date.now();
+  const next=rhythms.map(r=>({r,at:parseRhythmTime(r[2])})).sort((a,b)=>a.at-b.at)[0];
+  if(!next)return 'Reminders enabled.';
+  return `Next reminder: ${next.r[1]} at ${next.r[2]}`;
+}
+function updateReminderStatus(){
+  const el=$('reminderStatus');if(!el)return;
+  const enabled=localStorage.getItem('sw_reminders_enabled')==='yes';
+  if(enabled){el.textContent=nextReminderText();el.classList.add('reminder-on');}
+  else{el.textContent='Reminders are off. Tap enable to receive prayer rhythm alerts while the app is open.';el.classList.remove('reminder-on');}
+}
+async function enableRhythmReminders(){
+  if(!('Notification' in window)){toast('Notifications not supported here');return;}
+  let perm=Notification.permission;
+  if(perm!=='granted')perm=await Notification.requestPermission();
+  if(perm!=='granted'){toast('Notification permission not allowed');return;}
+  localStorage.setItem('sw_reminders_enabled','yes');
+  scheduleRhythmReminders();
+  updateReminderStatus();
+  toast('Daily rhythm reminders enabled');
+  try{new Notification('Shiloh Whispers ✦',{body:'Your spiritual rhythm reminders are now active.',silent:false});}catch(e){}
+}
+function scheduleRhythmReminders(){
+  reminderTimers.forEach(clearTimeout);reminderTimers=[];
+  if(localStorage.getItem('sw_reminders_enabled')!=='yes')return;
+  rhythms.forEach(r=>{
+    const at=parseRhythmTime(r[2]);
+    const delay=Math.max(1000, at.getTime()-Date.now());
+    const t=setTimeout(()=>fireRhythmReminder(r),delay);
+    reminderTimers.push(t);
+  });
+}
+function fireRhythmReminder(r){
+  const message=`${r[1]} — ${r[2]}`;
+  toast(message);
+  try{new Notification('Shiloh Whispers ✦',{body:`Time for ${r[1]}. Take a sacred pause.`,silent:false});}catch(e){}
+  // Reschedule for the next day while app remains open.
+  setTimeout(scheduleRhythmReminders,1500);
+}
+function resetRhythmReminders(){localStorage.removeItem('sw_reminders_enabled');reminderTimers.forEach(clearTimeout);reminderTimers=[];updateReminderStatus();toast('Reminders turned off')}
+
+(function stars(){let c=$('stars'),x=c.getContext('2d'),W,H,p=[];function r(){W=c.width=innerWidth;H=c.height=innerHeight}r();addEventListener('resize',r);for(let i=0;i<70;i++)p.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*1.2+.25,a:Math.random()*.5+.12});function loop(){x.clearRect(0,0,W,H);p.forEach(o=>{o.y-=.08;if(o.y<0)o.y=H;x.fillStyle=`rgba(212,181,87,${o.a})`;x.beginPath();x.arc(o.x,o.y,o.s,0,7);x.fill()});requestAnimationFrame(loop)}loop()})();
+applyDailySanctuary();
+if(user)enterApp();
+</script>
+</body>
+</html>
